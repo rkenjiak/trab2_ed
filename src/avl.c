@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include "../include/avl.h"
+#include "../include/linkedlist.h"
 
 int max(int a,int b){
     return a>b?a:b;
@@ -16,50 +17,34 @@ int altura(tnode *arv){
     return ret;
 }
 
-void avl_insere(tarv *parv,titem item){
-    avl_insere_node(parv,&parv->raiz,item);
+void avl_insere(tarv *parv,titem item, int active){
+    avl_insere_node(parv,&parv->raiz,NULL,item,active);
 }
 
-void avl_insere_node(tarv *parv,tnode ** ppnode,titem item){ //TODO
+void avl_insere_node(tarv *parv,tnode ** ppnode, tnode * pai,titem item, int active){ 
     if (*ppnode == NULL){
         *ppnode = (tnode *) malloc(sizeof(tnode));
-        (*ppnode)->item = item;
+        //(*ppnode)->item = item; 
         (*ppnode)->esq = NULL;
         (*ppnode)->dir = NULL;
         (*ppnode)->h = 0;
+        (*ppnode)->pai = pai;
+        (*ppnode)->item = inicializa_llist();
+        insere_fim(item, (*ppnode)->item);
 
-    }else if(((*parv)->item - item)>0){ //
-        avl_insere_node(parv,&(*ppnode)->esq,item);
-    }else{
-        avl_insere_node(parv,&(*ppnode)->dir,item);
+    }else if(parv->cmp((*ppnode)->item, item,active)>0){ 
+        avl_insere_node(parv,&(*ppnode)->esq,(*ppnode),item,active);
+    }else if(parv->cmp((*ppnode)->item, item,active)<0){
+        avl_insere_node(parv,&(*ppnode)->dir,(*ppnode),item,active);
+    }else { // caso que precisa inserir em linkedlist
+        insere_fim(item, (*ppnode)->item); // apenas insere na ll?
     }
     (*ppnode)->h = max(altura((*ppnode)->esq),altura((*ppnode)->dir)) + 1;
     _avl_rebalancear(ppnode);
 }
 
-void avl_insere2(tnode ** parv,titem item){ //TODO
-    tnode *y = NULL, *x = *parv;
-    tnode *z = (tnode *) malloc(sizeof(tnode));
-    z->item = item;
-    z->esq = NULL;
-    z->dir = NULL;
-    z->h = 0;
-    if (*parv == NULL){
-        
-
-    }else if(((*parv)->item - item)>0){
-        avl_insere(&(*parv)->esq,item);
-    }else{
-        avl_insere(&(*parv)->dir,item);
-    }
-    (*parv)->h = max(altura((*parv)->esq),altura((*parv)->dir)) + 1;
-    _avl_rebalancear(parv);
-}
-
-
-
-void _rd(tnode **parv){
-    tnode * y = *parv; 
+void _rd(tnode **ppnode){
+    tnode * y = *ppnode; 
     tnode * x = y->esq;
     tnode * A = x->esq;
     tnode * B = x->dir;
@@ -67,7 +52,7 @@ void _rd(tnode **parv){
 
     y->esq = B; 
     x->dir = y;
-    *parv  = x;
+    *ppnode = x;
     x->pai = y->pai;
     B->pai = y;
     y->pai = x;    
@@ -75,8 +60,8 @@ void _rd(tnode **parv){
     x->h = max(altura(A),altura(y)) + 1;
 }
 
-void _re(tnode **parv){
-    tnode * x = *parv; 
+void _re(tnode **ppnode){
+    tnode * x = *ppnode; 
     tnode * y = x->dir;
     tnode * A = x->esq;
     tnode * B = y->esq;
@@ -84,7 +69,7 @@ void _re(tnode **parv){
 
     x->dir = B;
     y->esq = x; 
-    *parv  = y;
+    *ppnode = y;
     y->pai = x->pai;
     B->pai = x;
     x->pai = y;    
@@ -155,7 +140,7 @@ tnode **sucessor(tnode **arv){
     return &y;
 }
 
-void avl_remove(tnode **parv, titem reg){
+void avl_remove(tnode **parv, titem reg){ /* adaptar para ll */
     int cmp;
     tnode *aux;
     tnode **sucessor;
@@ -190,30 +175,15 @@ void avl_remove(tnode **parv, titem reg){
     }
 }
 
-void avl_destroi(tnode *parv){ // TODO: free on linkedlist
-    if (parv!=NULL){
-        avl_destroi(parv->esq);
-        avl_destroi(parv->dir);
-        free(parv);
-    }
+void avl_destroi(tarv * arv, void (*freefunc)(void*)){
+    avl_destroi_node(arv->raiz,freefunc);
 }
 
-tnode *paiInsercao(tnode *raiz, titem novoItem) { /// ??????
-    tnode *pai = NULL;
-    tnode *atual = raiz;
-
-    while (atual != NULL) {
-        if (novoItem.chave < atual->item.chave) {
-            pai = atual;
-            atual = atual->esq;
-        } else if (novoItem.chave > atual->item.chave) {
-            pai = atual;
-            atual = atual->dir;
-        } else {
-            // Chave duplicada: negar a inserção
-            return NULL;
-        }
+void avl_destroi_node(tnode *pnode, void (*freefunc)(void*)){ // TODO: free on linkedlist
+    if (pnode!=NULL){
+        avl_destroi_node(pnode->esq,freefunc);
+        avl_destroi_node(pnode->dir,freefunc);
+        freefunc(pnode->item);
+        free(pnode);
     }
-
-    return pai;
 }

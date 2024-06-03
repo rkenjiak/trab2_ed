@@ -1,40 +1,52 @@
 #include"../include/linkedlist.h"
 
+celula * cria_cel(void * data){
+    celula * new = (celula *) malloc(sizeof(celula));
+    new->data = (uintptr_t)data;
+    new->prox = NULL;
+    return new;
+}
+
+LinkedList * inicializa_llist(){
+    LinkedList * new = (LinkedList *)malloc(sizeof(LinkedList));
+    new->head = NULL;
+    return new;
+}
+
+/*
 celula * busca_S(void * bucket, celula *lst){
     celula *p;
     p = lst;
-    while(p != NULL && p->bucket != bucket)
+    while(p != NULL && p->data != bucket)
         p = p->prox;
     return p;
 }
+*/
 
-void insere_inicio(void * bucket, celula **lst){
-    celula *nova;
-    nova = (celula *) malloc(sizeof(celula));
-    nova->bucket = bucket;
-    nova->prox = *lst;
-    *lst = nova;
+void insere_inicio(void * bucket, LinkedList *lst){
+    celula *nova = cria_cel(bucket);
+    nova->prox = lst->head;
+    lst->head = nova;
 }
 
-void insere_fim(void * bucket, celula **lst){
+void insere_fim(void * bucket, LinkedList *lst){
     celula *p;
-    celula *novo = (celula *) malloc(sizeof(celula));
-    novo->bucket = bucket;
-    novo->prox = NULL;
-    if(*lst == NULL){
-        *lst = novo;
+    celula *novo = cria_cel(bucket);
+    if(lst->head == NULL){
+        lst->head = novo;
     }else{
-        p = *lst;
+        p = lst->head;
         while(p->prox != NULL) p = p->prox;
         p->prox = novo;
     }
 }
 
+/*
 void busca_remove_S(void * bucket, celula **lst){
     celula *p, *q;
     p = NULL;
     q = *lst;
-    while(q != NULL && q->bucket != bucket){
+    while(q != NULL && q->data != bucket){
         p = q;
         q = q->prox;
     }
@@ -48,12 +60,14 @@ void busca_remove_S(void * bucket, celula **lst){
         }
     }
 }
+*/
 
-void apagar_LL(celula **lst){
-    celula *aux;
-    while(*lst != NULL){
-        aux = *lst;
-        *lst = (*lst)->prox;
-        free(aux);
+void apagar_LL(LinkedList *lst){
+    celula *aux1, *aux2 = (lst)->head;
+    while(aux2 != NULL){
+        aux1 = aux2;
+        aux2 = aux2->prox;
+        free(aux1);
     }
+    free(lst);
 }

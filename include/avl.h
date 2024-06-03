@@ -1,7 +1,7 @@
 #ifndef __AVL__
 #define  __AVL__
 
-typedef void ** titem;
+typedef LinkedList * titem;
 
 typedef struct _node{
     titem item;
@@ -13,14 +13,16 @@ typedef struct _node{
 
 typedef struct _avl{
     tnode *raiz;
-    int (*cmp)(void*, void*);
+    int (*cmp)(void*, void*, int active);
     char *(*get_key)(void *); // ?
+    void (*freefunc)(void*); // free linkedlist
 }tarv;
 
-void avl_insere(tarv *parv,titem reg);
-void avl_insere_node(tarv *parv,tnode ** ppnode,titem reg);
+void avl_insere(tarv *parv,titem reg,int active);
+void avl_insere_node(tarv *parv,tnode **ppnode,tnode *pai,titem reg,int active);
 void avl_remove(tnode ** parv,titem reg);
-void avl_destroi(tnode * parv);
+void avl_destroi_node(tnode *pnode,void (*freefunc)(void*)); // free on linkedlist
+void avl_destroi(tarv * parv,void (*freefunc)(void*));
 
 tnode ** tree_minimum(tnode **arv);
 tnode ** tree_maximum(tnode **arv);
