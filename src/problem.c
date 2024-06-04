@@ -175,11 +175,8 @@ void carregaDados(thash *h_ibge,tarv *arv, FILE *arq){ // TODO
                 colisoes = 0;
                 if(hash_insere(h_ibge, temp2, &colisoes) == EXIT_SUCCESS) c1 += 1;
                 tot1 += colisoes;
-                printf("1-");
                 if(colisoes>max1) max1 = colisoes;
                 addAVL(arv,temp2,arv->active);
-                printf("2-");
-
             }
         } else{
             break;
@@ -188,8 +185,6 @@ void carregaDados(thash *h_ibge,tarv *arv, FILE *arq){ // TODO
     printf("Carregamento de dados concluido.\n\n");  
     printf("Houve %d insercoes ao utilizar codigo_ibge.\n", c1);
     printf("Houve no maximo %d colisoes em uma insercao.\nHouve %d totais colisoes.\n\n", max1, tot1);
-    printf("Houve %d insercoes ao utilizar nome.\n", c2);
-    printf("Houve no maximo %d colisoes em uma insercao.\nHouve %d totais colisoes.\n\n", max2, tot2);
 }
 
 void showMenu(){

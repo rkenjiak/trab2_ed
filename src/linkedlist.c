@@ -1,4 +1,5 @@
 #include"../include/linkedlist.h"
+#include<stdio.h>
 
 celula * cria_cel(void * data){
     celula * new = (celula *) malloc(sizeof(celula));

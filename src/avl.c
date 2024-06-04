@@ -54,7 +54,7 @@ void _rd(tnode **ppnode){
     x->dir = y;
     *ppnode = x;
     x->pai = y->pai;
-    B->pai = y;
+    if(B != NULL)B->pai = y;
     y->pai = x;    
     y->h = max(altura(B),altura(C)) + 1;
     x->h = max(altura(A),altura(y)) + 1;
@@ -71,7 +71,7 @@ void _re(tnode **ppnode){
     y->esq = x; 
     *ppnode = y;
     y->pai = x->pai;
-    B->pai = x;
+    if(B != NULL)B->pai = x;
     x->pai = y;    
     x->h = max(altura(A),altura(B)) + 1;
     y->h = max(altura(x),altura(C)) + 1;
@@ -82,7 +82,6 @@ void _avl_rebalancear(tnode **parv){
     int fbf;
     tnode * filho;
     fb = altura((*parv)->esq) - altura((*parv)->dir);
-
     if (fb  == -2){
         filho = (*parv)->dir;
         fbf = altura(filho->esq) - altura(filho->dir);
