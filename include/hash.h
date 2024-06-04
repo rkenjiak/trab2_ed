@@ -1,6 +1,10 @@
 #ifndef __HASH__
 #define __HASH__
+#include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 
 /* hash */
 typedef struct {

@@ -1,78 +1,62 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "../include/problem.h"
 #define EPSILON 0.000001
 
+char *get_key_ibge(void *reg) {
+    return ((tmunicipio *)reg)->codigo_ibge;
+}
+
 int cmp (void *a, void *b, int active){
+    int arg1_i,arg2_i,resultado;
+    float arg1_f,arg2_f;
     switch (active)
     {
-    case 1:        
+    case 1:  // strcasecmp? strings.h      
         int resultado = strcmp(((tcity *)a)->key.nome,((tcity *)b)->key.nome);
         if(resultado<0) return -1;
         if(resultado>0) return 1;
         return 0;
         break;
     case 2:
-        float arg1 = ((tcity *)a)->key.latitude;
-        float arg2 = ((tcity *)b)->key.latitude;
-        if(arg1-arg2<EPSILON) return -1;
-        if(arg1-arg2>EPSILON) return 1;
+        arg1_f = ((tcity *)a)->key.latitude;
+        arg2_f = ((tcity *)b)->key.latitude;
+        if(arg1_f-arg2_f<EPSILON) return -1;
+        if(arg1_f-arg2_f>EPSILON) return 1;
         return 0;
         break;
     case 3:
-        float arg1 = ((tcity *)a)->key.longitude;
-        float arg2 = ((tcity *)b)->key.longitude;
-        if(arg1-arg2<EPSILON) return -1;
-        if(arg1-arg2>EPSILON) return 1;
+        arg1_f = ((tcity *)a)->key.longitude;
+        arg2_f = ((tcity *)b)->key.longitude;
+        if(arg1_f-arg2_f<EPSILON) return -1;
+        if(arg1_f-arg2_f>EPSILON) return 1;
         return 0;
         break;
     case 4:
-        int arg1 = ((tcity *)a)->key.codigo_uf;
-        int arg2 = ((tcity *)b)->key.codigo_uf;
-        if(arg1<arg2) return -1;
-        if(arg1>arg2) return 1;
+        arg1_i = ((tcity *)a)->key.codigo_uf;
+        arg2_i = ((tcity *)b)->key.codigo_uf;
+        if(arg1_i<arg2_i) return -1;
+        if(arg1_i>arg2_i) return 1;
         return 0;
         break;
     case 5:
-        int arg1 = ((tcity *)a)->key.ddd;
-        int arg2 = ((tcity *)b)->key.ddd;
-        if(arg1<arg2) return -1;
-        if(arg1>arg2) return 1;
+        arg1_i = ((tcity *)a)->key.ddd;
+        arg2_i = ((tcity *)b)->key.ddd;
+        if(arg1_i<arg2_i) return -1;
+        if(arg1_i>arg2_i) return 1;
         return 0;
         break;
     }
 }
 
-void criarAVL(tarv *parv, char *(*get_key)(void *), int (*cmp)(void*,void*)){
+void criarAVL(tarv *parv,int active, int (*cmp)(void*,void*,int), void (*freefunc)(void*)){
     parv->raiz = NULL;
     parv->cmp = cmp;
-    parv->get_key = get_key;
+    parv->active = active;
+    parv->freefunc = freefunc;
 }
 
 void addAVL(tarv *parv, tmunicipio *municipio, int active){
-    tcity * new = (tcity *)aloca_city(municipio, active); 
-    switch (active)
-    {
-    case 1:
-        
-        break;
-    case 2:
-
-        break;
-    case 3:
-
-        break;
-    case 4:
-
-        break;
-    case 5:
-
-        break;
-    }
-
-    //avl_insere(parv,new);
-
+    tcity * new = (tcity *)aloca_city(municipio, active);
+    avl_insere(parv,new,active);
 }
 
 void *aloca_city(tmunicipio *municipio, int active){
@@ -191,7 +175,10 @@ void carregaDados(thash *h_ibge,tarv *arv, FILE *arq){ // TODO
                 colisoes = 0;
                 if(hash_insere(h_ibge, temp2, &colisoes) == EXIT_SUCCESS) c1 += 1;
                 tot1 += colisoes;
+                printf("1-");
                 if(colisoes>max1) max1 = colisoes;
+                addAVL(arv,temp2,arv->active);
+                printf("2-");
 
             }
         } else{
@@ -203,4 +190,10 @@ void carregaDados(thash *h_ibge,tarv *arv, FILE *arq){ // TODO
     printf("Houve no maximo %d colisoes em uma insercao.\nHouve %d totais colisoes.\n\n", max1, tot1);
     printf("Houve %d insercoes ao utilizar nome.\n", c2);
     printf("Houve no maximo %d colisoes em uma insercao.\nHouve %d totais colisoes.\n\n", max2, tot2);
+}
+
+void showMenu(){
+    printf("|-------------MENU-------------|\n");
+    printf("|------------------------------|\n");
+    printf("| Digite sua escolha: ");
 }

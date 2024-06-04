@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include "../include/avl.h"
-#include "../include/linkedlist.h"
+
 
 int max(int a,int b){
     return a>b?a:b;
@@ -17,11 +17,11 @@ int altura(tnode *arv){
     return ret;
 }
 
-void avl_insere(tarv *parv,titem item, int active){
-    avl_insere_node(parv,&parv->raiz,NULL,item,active);
+void avl_insere(tarv *parv,void * data, int active){
+    avl_insere_node(parv,&parv->raiz,NULL,data,active);
 }
 
-void avl_insere_node(tarv *parv,tnode ** ppnode, tnode * pai,titem item, int active){ 
+void avl_insere_node(tarv *parv,tnode ** ppnode, tnode * pai,void * data, int active){ 
     if (*ppnode == NULL){
         *ppnode = (tnode *) malloc(sizeof(tnode));
         //(*ppnode)->item = item; 
@@ -30,14 +30,14 @@ void avl_insere_node(tarv *parv,tnode ** ppnode, tnode * pai,titem item, int act
         (*ppnode)->h = 0;
         (*ppnode)->pai = pai;
         (*ppnode)->item = inicializa_llist();
-        insere_fim(item, (*ppnode)->item);
+        insere_inicio(data, (*ppnode)->item);
 
-    }else if(parv->cmp((*ppnode)->item, item,active)>0){ 
-        avl_insere_node(parv,&(*ppnode)->esq,(*ppnode),item,active);
-    }else if(parv->cmp((*ppnode)->item, item,active)<0){
-        avl_insere_node(parv,&(*ppnode)->dir,(*ppnode),item,active);
+    }else if(parv->cmp((void*)((*ppnode)->item->head->data), data,active)>0){ 
+        avl_insere_node(parv,&(*ppnode)->esq,(*ppnode),data,active);
+    }else if(parv->cmp((void*)((*ppnode)->item->head->data), data,active)<0){
+        avl_insere_node(parv,&(*ppnode)->dir,(*ppnode),data,active);
     }else { // caso que precisa inserir em linkedlist
-        insere_fim(item, (*ppnode)->item); // apenas insere na ll?
+        insere_inicio(data, (*ppnode)->item); // apenas insere na ll?
     }
     (*ppnode)->h = max(altura((*ppnode)->esq),altura((*ppnode)->dir)) + 1;
     _avl_rebalancear(ppnode);
@@ -117,14 +117,22 @@ tnode ** percorre_esq(tnode ** arv){
 
 tnode ** tree_minimum(tnode **arv){
     tnode *aux = *arv;
-    while(aux->esq != NULL) aux = aux->esq;
-    return &(aux);
+    if(aux->esq == NULL){
+        return arv;
+    }else{
+        while(aux->esq->esq != NULL) aux = aux->esq;
+        return &(aux->esq);
+    }    
 }
 
 tnode ** tree_maximum(tnode **arv){
     tnode *aux = *arv;
-    while(aux->dir != NULL) aux = aux->dir;
-    return &(aux);
+    if(aux->dir == NULL){
+        return arv;
+    }else{
+        while(aux->dir->dir != NULL) aux = aux->dir;
+        return &(aux->dir);
+    }    
 }
 
 tnode **sucessor(tnode **arv){
@@ -137,10 +145,11 @@ tnode **sucessor(tnode **arv){
         x = y;
         y = y->pai;
     }
-    return &y;
+    if(y == NULL) return NULL; // caso que eh tree_max
+    return &(x->pai);
 }
 
-void avl_remove(tnode **parv, titem reg){ /* adaptar para ll */
+void avl_remove(tnode **parv, LinkedList *reg){ /* adaptar para ll */
     int cmp;
     tnode *aux;
     tnode **sucessor;

@@ -23,15 +23,15 @@ celula * busca_S(void * bucket, celula *lst){
 }
 */
 
-void insere_inicio(void * bucket, LinkedList *lst){
-    celula *nova = cria_cel(bucket);
+void insere_inicio(void * data, LinkedList *lst){
+    celula *nova = cria_cel(data);
     nova->prox = lst->head;
     lst->head = nova;
 }
 
-void insere_fim(void * bucket, LinkedList *lst){
+void insere_fim(void * data, LinkedList *lst){
     celula *p;
-    celula *novo = cria_cel(bucket);
+    celula *novo = cria_cel(data);
     if(lst->head == NULL){
         lst->head = novo;
     }else{
@@ -62,8 +62,8 @@ void busca_remove_S(void * bucket, celula **lst){
 }
 */
 
-void apagar_LL(LinkedList *lst){
-    celula *aux1, *aux2 = (lst)->head;
+void apagar_LL(void *lst){
+    celula *aux1, *aux2 = ((LinkedList*)lst)->head;
     while(aux2 != NULL){
         aux1 = aux2;
         aux2 = aux2->prox;
