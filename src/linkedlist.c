@@ -68,6 +68,7 @@ void apagar_LL(void *lst){
     while(aux2 != NULL){
         aux1 = aux2;
         aux2 = aux2->prox;
+        free((void*)aux1->data);
         free(aux1);
     }
     free(lst);
