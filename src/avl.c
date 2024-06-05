@@ -196,19 +196,20 @@ void avl_destroi_node(tnode *pnode, void (*freefunc)(void*)){ // TODO: free on l
     }
 }
 
-tnode * achar_node(tarv * arv, int num, float num2, char * palavra){
-    tnode * found;
-    switch (arv->active)
-    {
-    case 1:
+tnode * achar_inicio(tarv * parv, void * data){
+    return achar_node(parv, &parv->raiz,data); 
+}
 
-        break;
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    
-    default:
-        break;
-    }
+tnode * achar_node(tarv *parv, tnode **ppnode, void *data){
+    if(*ppnode == NULL) 
+        return NULL;
+    if(parv->cmp((void*)((*ppnode)->item->head->data),data,parv->active)>0){
+        tnode * esq = achar_node(parv,&(*ppnode)->esq,data);
+        if(esq != NULL){
+            return esq;
+        }else{
+            return *ppnode;
+        }
+    }    
+    return achar_node(parv,&(*ppnode)->dir,data);    
 }

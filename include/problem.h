@@ -6,6 +6,7 @@
 #include "./hash.h"
 #include "./avl.h"
 #include "./linkedlist.h"
+#include "./set.h"
 
 typedef struct{
     char codigo_ibge[10];

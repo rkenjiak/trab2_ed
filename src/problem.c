@@ -208,15 +208,35 @@ void showMenu(){
     printf("| Digite sua escolha: ");
 }
 
-void range_query(char ** vetor, int *tam, int escolha){
+tset * range_query(tarv *avl){
+    int a, b;
+    float c, d;
+    char *palavra_1;
+    char *palavra_2;
+    tset * new = criaSet(10000);
+    switch (avl->active)
+    {
+    case 1:        
+        printf("Digite o nome da primeira cidade:");
+        scanf(" %[^\n]",palavra_1);
+        printf("Digite o nome da segunda cidade: ");
+        scanf(" %[^\n]",palavra_2);
+        
+        
+        break;
+    case 2:
+    case 3:
+    case 4:
+    case 5:   
+    
+    }
+    printf("Digite o intervalo:");
 
 }
 
-void print_range_query(tarv * avl){ /// ddd 5 
-    int active = 5;
-    int a, b;
-    printf("Qual range deseja imprimir: ");
-    scanf("%d %d", &a, &b);
-
-
+void print_range_query(tset * set){
+    int i;
+    for(i=0;i<set->tam;i++){
+        printf("&d - %s\n",i,set->lista[i]);
+    }
 }
