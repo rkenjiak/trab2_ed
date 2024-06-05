@@ -80,7 +80,7 @@ void * hash_busca(thash  *h, const char * key){
     return ret;
 }
 
-/* descobre a qtd de repeticoes  */
+/* descobre a qtd de repeticoes 
 int qtd_ocorrencias_hash(thash  *h, const char * key){
     int j = 0;
     uint32_t hash = hashf(key,SEED);
@@ -98,7 +98,7 @@ int qtd_ocorrencias_hash(thash  *h, const char * key){
     return ret;
 }
 
-/* insere tmunicipio na lista, sabendo a qtd */
+insere tmunicipio na lista, sabendo a qtd 
 void hash_busca_ate_0(thash  *h, void *lista, const char *key, int repeticoes, size_t tamanho_dados){ 
     int i = 0,j = 0;
     uint32_t hash = hashf(key,SEED);
@@ -114,6 +114,7 @@ void hash_busca_ate_0(thash  *h, void *lista, const char *key, int repeticoes, s
         pos = (hash+j*hash2) % h->max;        
     }
 }
+*/
 
 int hash_remove(thash * h, const char * key){
     int j = 0;

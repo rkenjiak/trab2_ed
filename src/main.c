@@ -10,7 +10,7 @@
 
 int main(){
     thash h_ibge;
-    tarv arv;
+    tarv avl_nome, avl_lat, avl_long, avl_uf, avl_ddd;
     int nbuckets = 15013;
     char leitura[40];
     int escolha;
@@ -22,11 +22,7 @@ int main(){
         return EXIT_FAILURE;
     }
 
-    hash_constroi(&h_ibge, nbuckets, get_key_ibge);
-    printf("Hash construido.\n");
-    criarAVL(&arv,2,cmp,apagar_LL);
-    printf("AVL1 construido\n");
-    carregaDados(&h_ibge,&arv,arquivo);
+    carregaDados(&h_ibge,nbuckets,&avl_nome,&avl_lat,&avl_long,&avl_uf,&avl_ddd,arquivo);
     printf("Dados carregados.\n");
     
     
@@ -37,10 +33,13 @@ int main(){
     
     
     
-    //printf("Test\n");
     hash_apaga(&h_ibge);
     printf("Hash apagada.\n");
-    avl_destroi(&arv,arv.freefunc);
+    avl_destroi(&avl_nome,avl_nome.freefunc);
+    avl_destroi(&avl_lat,avl_lat.freefunc);
+    avl_destroi(&avl_long,avl_long.freefunc);
+    avl_destroi(&avl_uf,avl_uf.freefunc);
+    avl_destroi(&avl_ddd,avl_ddd.freefunc);
     printf("AVL apagada.\n");
     fclose(arquivo);
     printf("Arquivo fechado.\n");

@@ -5,6 +5,10 @@ char *get_key_ibge(void *reg) {
     return ((tmunicipio *)reg)->codigo_ibge;
 }
 
+char *get_key_set(void *reg) {
+    return ((tcity *)reg)->codigo_ibge;
+}
+
 int cmp (void *a, void *b, int active){
     int arg1_i,arg2_i,resultado;
     float arg1_f,arg2_f;
@@ -99,7 +103,7 @@ void *aloca_municipio(char *codigo_ibge, char *nome, float latitude, float longi
     return municipio;
 }
 
-void carregaDados(thash *h_ibge,tarv *arv, FILE *arq){ // TODO
+void carregaDados(thash *h_ibge,int nbuckets,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd, FILE *arq){ // TODO
     char linha[60];
     char *start;
     char *end;
@@ -108,6 +112,13 @@ void carregaDados(thash *h_ibge,tarv *arv, FILE *arq){ // TODO
     int totabb=0, c1=0 , c2=0; //insercoes realizadas
     tmunicipio temp;
     tmunicipio *temp2;
+
+    hash_constroi(h_ibge, nbuckets, get_key_ibge);
+    criarAVL(avl_nome,1,cmp,apagar_LL);
+    criarAVL(avl_lat,2,cmp,apagar_LL);
+    criarAVL(avl_long,3,cmp,apagar_LL);
+    criarAVL(avl_uf,4,cmp,apagar_LL);
+    criarAVL(avl_ddd,5,cmp,apagar_LL);
 
     while(1){
         if(fgets (linha, 60, arq)!=NULL) {
@@ -176,7 +187,11 @@ void carregaDados(thash *h_ibge,tarv *arv, FILE *arq){ // TODO
                 if(hash_insere(h_ibge, temp2, &colisoes) == EXIT_SUCCESS) c1 += 1;
                 tot1 += colisoes;
                 if(colisoes>max1) max1 = colisoes;
-                addAVL(arv,temp2,arv->active);
+                addAVL(avl_nome,temp2,avl_nome->active);
+                addAVL(avl_lat,temp2,avl_lat->active);
+                addAVL(avl_long,temp2,avl_long->active);
+                addAVL(avl_uf,temp2,avl_uf->active);
+                addAVL(avl_ddd,temp2,avl_ddd->active);
             }
         } else{
             break;
@@ -191,4 +206,17 @@ void showMenu(){
     printf("|-------------MENU-------------|\n");
     printf("|------------------------------|\n");
     printf("| Digite sua escolha: ");
+}
+
+void range_query(char ** vetor, int *tam, int escolha){
+
+}
+
+void print_range_query(tarv * avl){ /// ddd 5 
+    int active = 5;
+    int a, b;
+    printf("Qual range deseja imprimir: ");
+    scanf("%d %d", &a, &b);
+
+
 }

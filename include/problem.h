@@ -38,6 +38,6 @@ void criarAVL(tarv *parv, int active, int (*cmp)(void*,void*,int),void (*freefun
 void addAVL(tarv *parv, tmunicipio *municipio, int active);
 void *aloca_city(tmunicipio *municipio, int active);
 void *aloca_municipio(char *codigo_ibge, char *nome, float latitude, float longitude, int capital, int codigo_uf, int siafi_id, int ddd, char *fuso_horario);
-void carregaDados(thash *h_ibge,tarv *arv, FILE *arq);
+void carregaDados(thash *h_ibge,int nbuckets,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd, FILE *arq);
 
 #endif

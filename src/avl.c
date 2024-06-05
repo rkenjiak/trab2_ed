@@ -195,3 +195,20 @@ void avl_destroi_node(tnode *pnode, void (*freefunc)(void*)){ // TODO: free on l
         free(pnode);
     }
 }
+
+tnode * achar_node(tarv * arv, int num, float num2, char * palavra){
+    tnode * found;
+    switch (arv->active)
+    {
+    case 1:
+
+        break;
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    
+    default:
+        break;
+    }
+}
