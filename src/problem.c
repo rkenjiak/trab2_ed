@@ -15,7 +15,7 @@ int cmp (void *a, void *b, int active){
     switch (active)
     {
     case 1:  // strcasecmp? strings.h      
-        int resultado = strcmp(((tcity *)a)->key.nome,((tcity *)b)->key.nome);
+        int resultado = strcasecmp(((tcity *)a)->key.nome,((tcity *)b)->key.nome);
         if(resultado<0) return -1;
         if(resultado>0) return 1;
         return 0;
@@ -209,34 +209,155 @@ void showMenu(){
 }
 
 tset * range_query(tarv *avl){
-    int a, b;
-    float c, d;
-    char *palavra_1;
-    char *palavra_2;
+    int a, b, auxi;
+    float c, d, auxf;
+    char palavra_1[40];
+    char palavra_2[40];
+    char aux[40];
     tset * new = criaSet(10000);
+    tnode * start;
+    tnode * end;
+    tcity temp;
     switch (avl->active)
     {
     case 1:        
-        printf("Digite o nome da primeira cidade:");
+        printf("Digite uma palavra para pesquisar através do nome: ");
         scanf(" %[^\n]",palavra_1);
-        printf("Digite o nome da segunda cidade: ");
+        printf("Digite outra palavra para pesquisar através do nome: ");
         scanf(" %[^\n]",palavra_2);
-        
-        
+        if(strcasecmp(palavra_1,palavra_2)>0){
+            strcpy(aux,palavra_1);
+            strcpy(palavra_1,palavra_2);
+            strcpy(palavra_2,aux);
+        }
+        temp.active = avl->active;
+        strcpy(temp.key.nome,palavra_1);
+        start = achar_inicio(avl,&temp);
+
+        strcpy(temp.key.nome,palavra_2);
+        end = achar_fim(avl,&temp);
+
+        if(start == NULL || end == NULL){
+            desalocaSet(new);
+            new = NULL;
+        }else{
+            loop_insere_set(new,start,end);
+        }
         break;
     case 2:
-    case 3:
-    case 4:
-    case 5:   
-    
-    }
-    printf("Digite o intervalo:");
+        printf("Digite os 2 valores (float) de latitude que deseja buscar: ");
+        scanf("%f %f", &c, &d);
+        if(c>d){
+            auxf = c;
+            c = d;
+            d = auxf;
+        }
+        temp.active = avl->active;
+        temp.key.latitude = c;
+        start = achar_inicio(avl,&temp);
 
+        temp.key.latitude = d;
+        end = achar_fim(avl,&temp);
+
+        if(start == NULL || end == NULL){
+            desalocaSet(new);
+            new = NULL;
+        }else{
+            loop_insere_set(new,start,end);
+        }
+        break;
+    case 3:
+        printf("Digite os 2 valores (float) de longitude que deseja buscar: ");
+        scanf("%f %f", &c, &d);
+        if(c>d){
+            auxf = c;
+            c = d;
+            d = auxf;
+        }
+        temp.active = avl->active;
+        temp.key.longitude = c;
+        start = achar_inicio(avl,&temp);
+
+        temp.key.longitude = d;
+        end = achar_fim(avl,&temp);
+
+        if(start == NULL || end == NULL){
+            desalocaSet(new);
+            new = NULL;
+        }else{
+            loop_insere_set(new,start,end);
+        }
+        break;
+    case 4:
+        printf("Digite os 2 valores (int) de codigo_uf que deseja buscar: ");
+        scanf("%d %d", &a, &b);
+        if(a>b){
+            auxi = a;
+            a = b;
+            b = auxi;
+        }
+        temp.active = avl->active;
+        temp.key.codigo_uf = a;
+        start = achar_inicio(avl,&temp);
+
+        temp.key.codigo_uf = b;
+        end = achar_fim(avl,&temp);
+
+        if(start == NULL || end == NULL){
+            desalocaSet(new);
+            new = NULL;
+        }else{
+            loop_insere_set(new,start,end);
+        }
+        break;
+    case 5:   
+        printf("Digite os 2 valores (int) de ddd que deseja buscar: ");
+        scanf("%d %d", &a, &b);
+        if(a>b){
+            auxi = a;
+            a = b;
+            b = auxi;
+        }
+        temp.active = avl->active;
+        temp.key.ddd = a;
+        start = achar_inicio(avl,&temp);
+
+        temp.key.ddd = b;
+        end = achar_fim(avl,&temp);
+
+        if(start == NULL || end == NULL){
+            desalocaSet(new);
+            new = NULL;
+        }else{
+            loop_insere_set(new,start,end);
+        }
+        break;    
+    }
+    return new;
 }
 
 void print_range_query(tset * set){
     int i;
     for(i=0;i<set->tam;i++){
         printf("&d - %s\n",i,set->lista[i]);
+    }
+}
+
+void loop_insere_set(tset *set, tnode *start, tnode *end){
+    celula *aux;    
+    while(start != end){
+        aux = start->item->head;
+        while(aux != NULL){
+            insereSet(set,((tcity *)(aux->data))->codigo_ibge);
+            aux = aux->prox;
+        }
+        start = *(sucessor(&start));
+    }
+    if(start == end){
+        aux = start->item->head;
+        while(aux != NULL){
+            insereSet(set,((tcity *)(aux->data))->codigo_ibge);
+            aux = aux->prox;
+        }        
     }
 }

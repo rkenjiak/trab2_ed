@@ -35,6 +35,8 @@ void _re(tnode ** pparv);
 void _avl_rebalancear(tnode ** pparv);
 
 tnode * achar_inicio(tarv * parv, void * data); //tcity
-tnode * achar_node(tarv *parv, tnode **ppnode, void *data);
+tnode * achar_node_prox(tarv *parv, tnode **ppnode, void *data);
+tnode * achar_fim(tarv * parv, void * data);
+tnode * achar_node_ant(tarv *parv, tnode **ppnode, void *data);
 
 #endif
