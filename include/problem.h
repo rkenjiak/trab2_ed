@@ -46,13 +46,6 @@ typedef struct{
     int e5;
 }conjAVL;
 
-typedef struct{
-    tset *sNome;
-    tset *sLat;
-    tset *sLong;
-    tset *sUf;
-    tset *sDDD;
-}conjSets;
 
 void showMenu(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*sDDD);
 char *get_key_ibge(void *reg);
@@ -65,7 +58,7 @@ void carregaDados(conjAVL *avls, thash *h_ibge,int nbuckets,tarv *avl_nome,tarv 
 void loop_insere_set(tset *set, tnode *start, tnode *end);
 tset * range_query(tarv *avl,int qtd);
 void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd,int e1,int e2,int e3,int e4,int e5);
-void AddEditQuery(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*sDDD,int qtd);
+void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,int qtd);
 void DesativarQuery(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*sDDD);
 
 

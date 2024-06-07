@@ -219,9 +219,9 @@ tset * range_query(tarv *avl, int qtd){
     switch (avl->active)
     {
     case 1:        
-        printf("Digite uma palavra para pesquisar através do nome: ");
+        printf("| Digite uma palavra para pesquisar através do nome: ");
         scanf(" %[^\n]",palavra_1);
-        printf("Digite outra palavra para pesquisar através do nome: ");
+        printf("| Digite outra palavra para pesquisar através do nome: ");
         scanf(" %[^\n]",palavra_2);
         if(strcasecmp(palavra_1,palavra_2)>0){
             strcpy(aux,palavra_1);
@@ -243,7 +243,7 @@ tset * range_query(tarv *avl, int qtd){
         }
         break;
     case 2:
-        printf("Digite os 2 valores (float) de latitude que deseja buscar: ");
+        printf("| Digite os 2 valores (float) de latitude que deseja buscar: ");
         scanf("%f %f", &c, &d);
         if(c>d){
             auxf = c;
@@ -265,7 +265,7 @@ tset * range_query(tarv *avl, int qtd){
         }
         break;
     case 3:
-        printf("Digite os 2 valores (float) de longitude que deseja buscar: ");
+        printf("| Digite os 2 valores (float) de longitude que deseja buscar: ");
         scanf("%f %f", &c, &d);
         if(c>d){
             auxf = c;
@@ -287,7 +287,7 @@ tset * range_query(tarv *avl, int qtd){
         }
         break;
     case 4:
-        printf("Digite os 2 valores (int) de codigo_uf que deseja buscar: ");
+        printf("| Digite os 2 valores (int) de codigo_uf que deseja buscar: ");
         scanf("%d %d", &a, &b);
         if(a>b){
             auxi = a;
@@ -309,7 +309,7 @@ tset * range_query(tarv *avl, int qtd){
         }
         break;
     case 5:   
-        printf("Digite os 2 valores (int) de ddd que deseja buscar: ");
+        printf("| Digite os 2 valores (int) de ddd que deseja buscar: ");
         scanf("%d %d", &a, &b);
         if(a>b){
             auxi = a;
@@ -334,12 +334,6 @@ tset * range_query(tarv *avl, int qtd){
     return new;
 }
 
-void print_range_query(tset * set){
-    int i;
-    for(i=0;i<set->tam;i++){
-        printf("&d - %s\n",i,set->lista[i]);
-    }
-}
 
 void loop_insere_set(tset *set, tnode *start, tnode *end){
     celula *aux;    
@@ -406,36 +400,37 @@ void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,
     avls->e5 = e5;
 }
 
-void AddEditQuery(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*sDDD,int qtd){
+void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,int qtd){
     int opc = -1;
     while(opc != 0){
         printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\nQual opção você deseja adicionar/editar: ");
-        if(scanf("%d", &opc) == 1){
+        if(scanf(" %d", &opc) == 1){
             switch (opc)
             {
             case 1:
-                if(sNome != NULL) desalocaSet(sNome);
-                sNome = range_query(avls->avl_nome,qtd);  
+                if(*sNome != NULL) desalocaSet(*sNome);
+                *sNome = range_query(avls->avl_nome,qtd);  
                 avls->e1 = 1;              
                 break;
             case 2:
-                if(sLat != NULL) desalocaSet(sLat);
-                sLat = range_query(avls->avl_lat,qtd);     
+                if(*sLat != NULL) desalocaSet(*sLat);
+                *sLat = range_query(avls->avl_lat,qtd);                
                 avls->e2 = 1;            
+                printf("tam = %d\n",(*sLat)->tam);
                 break;
             case 3:
-                if(sLong != NULL) desalocaSet(sLong);
-                sLong = range_query(avls->avl_long,qtd);     
+                if(*sLong != NULL) desalocaSet(*sLong);
+                *sLong = range_query(avls->avl_long,qtd);     
                 avls->e3 = 1;            
                 break;
             case 4:
-                if(sUf != NULL) desalocaSet(sUf);
-                sUf = range_query(avls->avl_uf,qtd);   
+                if(*sUf != NULL) desalocaSet(*sUf);
+                *sUf = range_query(avls->avl_uf,qtd);   
                 avls->e4 = 1;              
                 break;
             case 5:
-                if(sDDD != NULL) desalocaSet(sDDD);
-                sDDD = range_query(avls->avl_ddd,qtd);         
+                if(*sDDD != NULL) desalocaSet(*sDDD);
+                *sDDD = range_query(avls->avl_ddd,qtd);         
                 avls->e5 = 1;        
                 break;
             }
@@ -448,10 +443,10 @@ void AddEditQuery(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*s
 }
 
 void DesativarQuery(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*sDDD){
-    int opc;
+    int opc=-1;
     while(opc != 0){
-        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\nQual opção você deseja desativar: ");
-        if(scanf("%d", &opc) == 1){
+        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\n| Qual opção você deseja desativar: ");
+        if(scanf(" %d", &opc) == 1){
             switch (opc)
             {
             case 1:

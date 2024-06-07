@@ -28,14 +28,11 @@ int main(){
     
     while(escolha != 0){
         showMenu(&avls,sNome,sLat,sLong,sUf,sDDD);
-        if(scanf("%d",&escolha) == 1) {
-            printf("ENTROU NO SCANF, ANTES DO SWITCH\n");
+        if(scanf(" %d",&escolha) == 1) {
             switch (escolha)
             {
             case 1:
-                printf("ENTROU NO SCANF, DEPOIS DO SWITCH\n");
-                AddEditQuery(&avls,sNome,sLat,sLong,sUf,sDDD,qtd);   
-                printf("ENTROU NO SCANF, DEPOIS2 DO SWITCH\n");             
+                AddEditQuery(&avls,&sNome,&sLat,&sLong,&sUf,&sDDD,qtd);             
                 break;
             case 2:
                 DesativarQuery(&avls,sNome,sLat,sLong,sUf,sDDD);
