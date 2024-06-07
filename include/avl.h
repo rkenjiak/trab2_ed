@@ -15,7 +15,6 @@ typedef struct _node{
 typedef struct _avl{
     tnode *raiz;
     int (*cmp)(void*, void*, int active);
-    //char *(*get_key)(void *); 
     void (*freefunc)(void*); // free linkedlist
     int active;
 }tarv;

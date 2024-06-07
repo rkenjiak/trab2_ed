@@ -1,6 +1,6 @@
 ## Para compilar diretamente quando estiver em ~/trab2_ed/
 ```
-gcc -o test -lm .\src\main.c .\src\avl.c .\src\hash.c .\src\linkedlist.c .\src\problem.c
+gcc -o test -lm .\src\main.c .\src\avl.c .\src\hash.c .\src\linkedlist.c .\src\problem.c .\src\set.c
 ```
 
 

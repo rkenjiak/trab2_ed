@@ -103,7 +103,7 @@ void *aloca_municipio(char *codigo_ibge, char *nome, float latitude, float longi
     return municipio;
 }
 
-void carregaDados(thash *h_ibge,int nbuckets,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd, FILE *arq){ // TODO
+void carregaDados(conjAVL *avls,thash *h_ibge,int nbuckets,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd, FILE *arq,int *qtd){ // TODO
     char linha[60];
     char *start;
     char *end;
@@ -119,6 +119,7 @@ void carregaDados(thash *h_ibge,int nbuckets,tarv *avl_nome,tarv *avl_lat,tarv *
     criarAVL(avl_long,3,cmp,apagar_LL);
     criarAVL(avl_uf,4,cmp,apagar_LL);
     criarAVL(avl_ddd,5,cmp,apagar_LL);
+    constroi_conjAVL(avls,avl_nome,avl_lat,avl_long,avl_uf,avl_ddd,0,0,0,0,0);
 
     while(1){
         if(fgets (linha, 60, arq)!=NULL) {
@@ -200,21 +201,18 @@ void carregaDados(thash *h_ibge,int nbuckets,tarv *avl_nome,tarv *avl_lat,tarv *
     printf("Carregamento de dados concluido.\n\n");  
     printf("Houve %d insercoes ao utilizar codigo_ibge.\n", c1);
     printf("Houve no maximo %d colisoes em uma insercao.\nHouve %d totais colisoes.\n\n", max1, tot1);
+    *qtd = c1;
 }
 
-void showMenu(){
-    printf("|-------------MENU-------------|\n");
-    printf("|------------------------------|\n");
-    printf("| Digite sua escolha: ");
-}
 
-tset * range_query(tarv *avl){
+
+tset * range_query(tarv *avl, int qtd){
     int a, b, auxi;
     float c, d, auxf;
     char palavra_1[40];
     char palavra_2[40];
     char aux[40];
-    tset * new = criaSet(10000);
+    tset * new = criaSet(qtd);
     tnode * start;
     tnode * end;
     tcity temp;
@@ -359,5 +357,133 @@ void loop_insere_set(tset *set, tnode *start, tnode *end){
             insereSet(set,((tcity *)(aux->data))->codigo_ibge);
             aux = aux->prox;
         }        
+    }
+}
+
+void showMenu(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*sDDD){
+    printf("\n|--------------QUERIES----------------\n");
+    if(avls->e1){
+        printf("| Há %d cidades na QUERY_NOME.\n",sNome->tam);
+    }else{
+        printf("| DESATIVADA - QUERY NOME\n");
+    }
+    if(avls->e2){
+        printf("| Há %d cidades na QUERY_LATITUDE.\n",sLat->tam);
+    }else{
+        printf("| DESATIVADA - QUERY LATITUDE\n");
+    }
+    if(avls->e3){
+        printf("| Há %d cidades na QUERY_LONGITUDE.\n",sLong->tam);
+    }else{
+        printf("| DESATIVADA - QUERY LONGITUDE\n");
+    }
+    if(avls->e4){
+        printf("| Há %d cidades na QUERY_CODIGO_UF.\n",sUf->tam);
+    }else{
+        printf("| DESATIVADA - QUERY CODIGO_UF\n");
+    }
+    if(avls->e5){
+        printf("| Há %d cidades na QUERY_DDD.\n",sDDD->tam);
+    }else{
+        printf("| DESATIVADA - QUERY DDD\n");
+    }
+    printf("|-------------MENU-------------|\n");
+    printf("| 0 - SAIR\n| 1 - ADICIONAR/EDITAR QUERY\n| 2 - DESATIVAR QUERY\n| 3 - IMPRIMIR QUERY\n");
+    printf("|------------------------------|\n");
+    printf("| Digite sua escolha: ");
+}
+
+void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd,int e1,int e2,int e3,int e4,int e5){
+    avls->avl_nome = avl_nome;
+    avls->avl_lat = avl_lat;
+    avls->avl_long = avl_long;
+    avls->avl_uf = avl_uf;
+    avls->avl_ddd = avl_ddd;
+    avls->e1 = e1;
+    avls->e2 = e2;
+    avls->e3 = e3;
+    avls->e4 = e4;
+    avls->e5 = e5;
+}
+
+void AddEditQuery(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*sDDD,int qtd){
+    int opc = -1;
+    while(opc != 0){
+        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\nQual opção você deseja adicionar/editar: ");
+        if(scanf("%d", &opc) == 1){
+            switch (opc)
+            {
+            case 1:
+                if(sNome != NULL) desalocaSet(sNome);
+                sNome = range_query(avls->avl_nome,qtd);  
+                avls->e1 = 1;              
+                break;
+            case 2:
+                if(sLat != NULL) desalocaSet(sLat);
+                sLat = range_query(avls->avl_lat,qtd);     
+                avls->e2 = 1;            
+                break;
+            case 3:
+                if(sLong != NULL) desalocaSet(sLong);
+                sLong = range_query(avls->avl_long,qtd);     
+                avls->e3 = 1;            
+                break;
+            case 4:
+                if(sUf != NULL) desalocaSet(sUf);
+                sUf = range_query(avls->avl_uf,qtd);   
+                avls->e4 = 1;              
+                break;
+            case 5:
+                if(sDDD != NULL) desalocaSet(sDDD);
+                sDDD = range_query(avls->avl_ddd,qtd);         
+                avls->e5 = 1;        
+                break;
+            }
+        }else {
+            printf("| Escolha inválida.\n");
+            while (getchar() != '\n');
+            continue;
+        }
+    }
+}
+
+void DesativarQuery(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*sDDD){
+    int opc;
+    while(opc != 0){
+        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\nQual opção você deseja desativar: ");
+        if(scanf("%d", &opc) == 1){
+            switch (opc)
+            {
+            case 1:
+                if(sNome != NULL) desalocaSet(sNome);
+                sNome = NULL;            
+                avls->e1 = 0; 
+                break;
+            case 2:
+                if(sLat != NULL) desalocaSet(sLat); 
+                sLat = NULL;   
+                avls->e2 = 0;           
+                break;
+            case 3:
+                if(sLong != NULL) desalocaSet(sLong);   
+                sLong = NULL;           
+                avls->e3 = 0;
+                break;
+            case 4:
+                if(sUf != NULL) desalocaSet(sUf);              
+                sUf = NULL;
+                avls->e4 = 0;
+                break;
+            case 5:
+                if(sDDD != NULL) desalocaSet(sDDD);   
+                sDDD = NULL;            
+                avls->e5 = 0;
+                break;
+            }
+        }else {
+            printf("| Escolha inválida.\n");
+            while (getchar() != '\n');
+            continue;
+        }
     }
 }
