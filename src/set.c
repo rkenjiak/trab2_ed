@@ -47,7 +47,8 @@ tset * interseccao(tset *t1, tset *t2){
         for(i = 0; i<t1->tam;i++){
             for(j = 0; j<t2->tam; j++){
                 if(strcmp(t1->lista[i],t2->lista[j]) == 0){
-                    insereSet(new, t1->lista[i]);                    
+                    insereSet(new, t1->lista[i]);
+                    break;                    
                 }
             }
         }        
