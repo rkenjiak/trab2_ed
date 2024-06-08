@@ -9,12 +9,14 @@ tset * criaSet(int max){
     return new;
 }
 
-void desalocaSet(tset * set){
-    for(int i = 0; i<set->tam; i++){
-        free(set->lista[i]);
+void desalocaSet(tset ** set){
+    if(*set == NULL) return;
+    for(int i = 0; i<(*set)->tam; i++){
+        free((*set)->lista[i]);
     }
-    free(set->lista);
-    free(set);
+    free((*set)->lista);
+    free(*set);
+    *set=NULL;
 }
 
 // nao esta verificando se cod ja esta no set
@@ -26,20 +28,29 @@ void insereSet(tset * set,const char * cod){ // strings de tam no max 9
 }
 
 tset * interseccao(tset *t1, tset *t2){
+    int i, j, mintam;
+    tset * new;
     if(t1==NULL && t2==NULL)return NULL;
-    else if(t1==NULL) return t2;
-    else if(t2==NULL) return t1;
-    else{
-        int i, j, mintam;
+    else if(t2==NULL) {
+        new = criaSet(t1->tam);
+        for(i=0;i<t1->tam;i++){
+            insereSet(new,t1->lista[i]);
+        }
+    }else if(t1==NULL){
+        new = criaSet(t2->tam);
+        for(i=0;i<t2->tam;i++){
+            insereSet(new,t2->lista[i]);
+        }
+    }else{        
         mintam = (t1->tam<t2->tam) ? t1->tam : t2->tam;
-        tset * new = criaSet(mintam);
+        new = criaSet(mintam);
         for(i = 0; i<t1->tam;i++){
             for(j = 0; j<t2->tam; j++){
                 if(strcmp(t1->lista[i],t2->lista[j]) == 0){
                     insereSet(new, t1->lista[i]);                    
                 }
             }
-        }
-        return new;
-    }    
+        }        
+    }  
+    return new;
 }

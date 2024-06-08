@@ -11,7 +11,7 @@ typedef struct{
 
 tset * criaSet(int max);
 void insereSet(tset * set,const char * cod);
-void desalocaSet(tset * set);
+void desalocaSet(tset ** set);
 tset * interseccao(tset *t1, tset *t2);
 
 #endif

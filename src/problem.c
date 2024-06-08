@@ -119,7 +119,7 @@ void carregaDados(conjAVL *avls,thash *h_ibge,int nbuckets,tarv *avl_nome,tarv *
     criarAVL(avl_long,3,cmp,apagar_LL);
     criarAVL(avl_uf,4,cmp,apagar_LL);
     criarAVL(avl_ddd,5,cmp,apagar_LL);
-    constroi_conjAVL(avls,avl_nome,avl_lat,avl_long,avl_uf,avl_ddd,0,0,0,0,0);
+    constroi_conjAVL(avls,avl_nome,avl_lat,avl_long,avl_uf,avl_ddd);
 
     while(1){
         if(fgets (linha, 60, arq)!=NULL) {
@@ -236,7 +236,7 @@ tset * range_query(tarv *avl, int qtd){
         end = achar_fim(avl,&temp);
 
         if(start == NULL || end == NULL){
-            desalocaSet(new);
+            desalocaSet(&new);
             new = NULL;
         }else{
             loop_insere_set(new,start,end);
@@ -258,7 +258,7 @@ tset * range_query(tarv *avl, int qtd){
         end = achar_fim(avl,&temp);
 
         if(start == NULL || end == NULL){
-            desalocaSet(new);
+            desalocaSet(&new);
             new = NULL;
         }else{
             loop_insere_set(new,start,end);
@@ -280,7 +280,7 @@ tset * range_query(tarv *avl, int qtd){
         end = achar_fim(avl,&temp);
 
         if(start == NULL || end == NULL){
-            desalocaSet(new);
+            desalocaSet(&new);
             new = NULL;
         }else{
             loop_insere_set(new,start,end);
@@ -302,7 +302,7 @@ tset * range_query(tarv *avl, int qtd){
         end = achar_fim(avl,&temp);
 
         if(start == NULL || end == NULL){
-            desalocaSet(new);
+            desalocaSet(&new);
             new = NULL;
         }else{
             loop_insere_set(new,start,end);
@@ -324,7 +324,7 @@ tset * range_query(tarv *avl, int qtd){
         end = achar_fim(avl,&temp);
 
         if(start == NULL || end == NULL){
-            desalocaSet(new);
+            desalocaSet(&new);
             new = NULL;
         }else{
             loop_insere_set(new,start,end);
@@ -354,84 +354,71 @@ void loop_insere_set(tset *set, tnode *start, tnode *end){
     }
 }
 
-void showMenu(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*sDDD){
+void showQueries(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD){
     printf("\n|--------------QUERIES----------------\n");
-    if(avls->e1){
-        printf("| Há %d cidades na QUERY_NOME.\n",sNome->tam);
+    if(*sNome!=NULL){
+        printf("| Há %d cidades na QUERY_NOME.\n",(*sNome)->tam);
     }else{
         printf("| DESATIVADA - QUERY NOME\n");
     }
-    if(avls->e2){
-        printf("| Há %d cidades na QUERY_LATITUDE.\n",sLat->tam);
+    if(*sLat!=NULL){
+        printf("| Há %d cidades na QUERY_LATITUDE.\n",(*sLat)->tam);
     }else{
         printf("| DESATIVADA - QUERY LATITUDE\n");
     }
-    if(avls->e3){
-        printf("| Há %d cidades na QUERY_LONGITUDE.\n",sLong->tam);
+    if(*sLong!=NULL){
+        printf("| Há %d cidades na QUERY_LONGITUDE.\n",(*sLong)->tam);
     }else{
         printf("| DESATIVADA - QUERY LONGITUDE\n");
     }
-    if(avls->e4){
-        printf("| Há %d cidades na QUERY_CODIGO_UF.\n",sUf->tam);
+    if(*sUf!=NULL){
+        printf("| Há %d cidades na QUERY_CODIGO_UF.\n",(*sUf)->tam);
     }else{
         printf("| DESATIVADA - QUERY CODIGO_UF\n");
     }
-    if(avls->e5){
-        printf("| Há %d cidades na QUERY_DDD.\n",sDDD->tam);
+    if(*sDDD!=NULL){
+        printf("| Há %d cidades na QUERY_DDD.\n",(*sDDD)->tam);
     }else{
         printf("| DESATIVADA - QUERY DDD\n");
-    }
-    printf("|-------------MENU-------------|\n");
-    printf("| 0 - SAIR\n| 1 - ADICIONAR/EDITAR QUERY\n| 2 - DESATIVAR QUERY\n| 3 - IMPRIMIR QUERY\n");
-    printf("|------------------------------|\n");
-    printf("| Digite sua escolha: ");
+    }    
 }
 
-void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd,int e1,int e2,int e3,int e4,int e5){
+void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd){
     avls->avl_nome = avl_nome;
     avls->avl_lat = avl_lat;
     avls->avl_long = avl_long;
     avls->avl_uf = avl_uf;
     avls->avl_ddd = avl_ddd;
-    avls->e1 = e1;
-    avls->e2 = e2;
-    avls->e3 = e3;
-    avls->e4 = e4;
-    avls->e5 = e5;
 }
 
 void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,int qtd){
     int opc = -1;
     while(opc != 0){
-        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\nQual opção você deseja adicionar/editar: ");
+        showQueries(sNome,sLat,sLong,sUf,sDDD);
+        printf("|--------------------------------------------------------------------------\n");
+        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\n| Qual opção você deseja adicionar/editar: ");
         if(scanf(" %d", &opc) == 1){
             switch (opc)
             {
             case 1:
-                if(*sNome != NULL) desalocaSet(*sNome);
+                if(*sNome != NULL) desalocaSet(sNome);
                 *sNome = range_query(avls->avl_nome,qtd);  
-                avls->e1 = 1;              
                 break;
             case 2:
-                if(*sLat != NULL) desalocaSet(*sLat);
-                *sLat = range_query(avls->avl_lat,qtd);                
-                avls->e2 = 1;            
-                printf("tam = %d\n",(*sLat)->tam);
+                if(*sLat != NULL) desalocaSet(sLat);
+                *sLat = range_query(avls->avl_lat,qtd);   
                 break;
             case 3:
-                if(*sLong != NULL) desalocaSet(*sLong);
+                if(*sLong != NULL) desalocaSet(sLong);
                 *sLong = range_query(avls->avl_long,qtd);     
-                avls->e3 = 1;            
                 break;
             case 4:
-                if(*sUf != NULL) desalocaSet(*sUf);
+                if(*sUf != NULL) desalocaSet(sUf);
                 *sUf = range_query(avls->avl_uf,qtd);   
-                avls->e4 = 1;              
                 break;
             case 5:
-                if(*sDDD != NULL) desalocaSet(*sDDD);
-                *sDDD = range_query(avls->avl_ddd,qtd);         
-                avls->e5 = 1;        
+                if(*sDDD != NULL) desalocaSet(sDDD);
+                *sDDD = range_query(avls->avl_ddd,qtd);  
                 break;
             }
         }else {
@@ -442,7 +429,7 @@ void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,ts
     }
 }
 
-void DesativarQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD){
+void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD){
     int opc=-1;
     while(opc != 0){
         printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\n| Qual opção você deseja desativar: ");
@@ -450,29 +437,24 @@ void DesativarQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,
             switch (opc)
             {
             case 1:
-                if(sNome != NULL) desalocaSet(*sNome);
-                sNome = NULL;            
-                avls->e1 = 0; 
+                if(*sNome != NULL) desalocaSet(sNome);
+                *sNome = NULL;  
                 break;
             case 2:
-                if(sLat != NULL) desalocaSet(*sLat); 
-                sLat = NULL;   
-                avls->e2 = 0;           
+                if(*sLat != NULL) desalocaSet(sLat); 
+                *sLat = NULL;            
                 break;
             case 3:
-                if(sLong != NULL) desalocaSet(*sLong);   
-                sLong = NULL;           
-                avls->e3 = 0;
+                if(*sLong != NULL) desalocaSet(sLong);   
+                *sLong = NULL;      
                 break;
             case 4:
-                if(sUf != NULL) desalocaSet(*sUf);              
-                sUf = NULL;
-                avls->e4 = 0;
+                if(*sUf != NULL) desalocaSet(sUf);              
+                *sUf = NULL;
                 break;
             case 5:
-                if(sDDD != NULL) desalocaSet(*sDDD);   
-                sDDD = NULL;            
-                avls->e5 = 0;
+                if(*sDDD != NULL) desalocaSet(sDDD);   
+                *sDDD = NULL;       
                 break;
             }
         }else {
@@ -485,19 +467,19 @@ void DesativarQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,
 
 void imprimeInfoCidade(thash *h_ibge, const char *cod, int tam){
     tmunicipio *municipio = hash_busca(h_ibge, cod);
-    printf("| %s ", municipio->codigo_ibge);
-    printf("|%-*s ", tam, municipio->nome);
+    printf("|  %s ", municipio->codigo_ibge);
+    printf("| %*s ", tam, municipio->nome);
     printf("| %2.4f ",municipio->latitude);
-    printf("| %2.4f ",municipio->longitude);
-    printf("| %d ",municipio->capital);
+    printf("|  %2.4f ",municipio->longitude);
+    printf("| %7d ",municipio->capital);
     printf("| %d ",municipio->codigo_uf);
-    printf("| %d ",municipio->siafi_id);
-    printf("| %d ",municipio->ddd);
+    printf("| %8d ",municipio->siafi_id);
+    printf("| %3d ",municipio->ddd);
     printf("| %s\n",municipio->fuso_horario);
 }
 void imprimeCabecalho(int tam){
     printf("| cod_ibge ");
-    printf("|%*cnome ",tam,' ');
+    printf("|%*cnome ",tam-3,' ');
     printf("| latitude ");
     printf("| longitude ");
     printf("| capital ");
@@ -507,11 +489,13 @@ void imprimeCabecalho(int tam){
     printf("| fuso_horario\n");
 }
 
-int maxTam(tset *set){
+int maxTam(tset *set,thash *h_ibge){
     int max=0,a;
+    tmunicipio *municipio;
     if(set==NULL) return 0;
     for(int i=0;i<set->tam;i++){
-        a=strlen(set->lista[i]);
+        municipio = hash_busca(h_ibge, set->lista[i]);
+        a=strlen(municipio->nome);
         if(a>max) max = a;
     }
     return max;
@@ -524,7 +508,7 @@ void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset *
     p2=interseccao(p1,*sLong);
     p3=interseccao(p2,*sUf);
     pfinal=interseccao(p3,*sDDD);
-    tam = maxTam(pfinal);
+    tam = maxTam(pfinal,h_ibge);
     while(opc!=0){
         imprimeCabecalho(tam);
         if(pfinal!=NULL)
@@ -558,8 +542,8 @@ void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset *
 
         }
     }   
-    if(p1!=NULL)desalocaSet(p1);
-    if(p2!=NULL)desalocaSet(p2);
-    if(p3!=NULL)desalocaSet(p3);
-    if(pfinal!=NULL)desalocaSet(pfinal); 
+    if(p1!=NULL)desalocaSet(&p1);
+    if(p2!=NULL)desalocaSet(&p2);
+    if(p3!=NULL)desalocaSet(&p3);
+    if(pfinal!=NULL)desalocaSet(&pfinal); 
 }

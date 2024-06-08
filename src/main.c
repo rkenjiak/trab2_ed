@@ -27,7 +27,11 @@ int main(){
     printf("Dados carregados.\n");
     
     while(escolha != 0){
-        showMenu(&avls,sNome,sLat,sLong,sUf,sDDD);
+        showQueries(&sNome,&sLat,&sLong,&sUf,&sDDD);
+        printf("|-------------MENU-------------|\n");
+        printf("| 0 - SAIR\n| 1 - ADICIONAR/EDITAR QUERY\n| 2 - DESATIVAR QUERY\n| 3 - IMPRIMIR QUERY\n");
+        printf("|------------------------------|\n");
+        printf("| Digite sua escolha: ");
         if(scanf(" %d",&escolha) == 1) {
             switch (escolha)
             {
@@ -35,7 +39,7 @@ int main(){
                 AddEditQuery(&avls,&sNome,&sLat,&sLong,&sUf,&sDDD,qtd);             
                 break;
             case 2:
-                DesativarQuery(&avls,&sNome,&sLat,&sLong,&sUf,&sDDD);
+                DesativarQuery(&sNome,&sLat,&sLong,&sUf,&sDDD);
                 break;
             case 3:
                 ShowInterseccao(&avls,&h_ibge,&sNome,&sLat,&sLong,&sUf,&sDDD);
