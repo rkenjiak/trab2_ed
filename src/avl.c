@@ -203,7 +203,7 @@ tnode * achar_inicio(tarv * parv, void * data){
 tnode * achar_node_prox(tarv *parv, tnode **ppnode, void *data){
     if(*ppnode == NULL) 
         return NULL;
-    if(parv->cmp((void*)((*ppnode)->item->head->data),data,parv->active)>0){
+    if(parv->cmp((void*)((*ppnode)->item->head->data),data,parv->active)>=0){
         tnode * esq = achar_node_prox(parv,&(*ppnode)->esq,data);
         if(esq != NULL){
             return esq;
@@ -221,7 +221,7 @@ tnode * achar_fim(tarv * parv, void * data){
 tnode * achar_node_ant(tarv *parv, tnode **ppnode, void *data){
     if(*ppnode == NULL) 
         return NULL;
-    if(parv->cmp((void*)((*ppnode)->item->head->data),data,parv->active)<0){
+    if(parv->cmp((void*)((*ppnode)->item->head->data),data,parv->active)<=0){
         tnode * dir = achar_node_ant(parv,&(*ppnode)->dir,data);
         if(dir != NULL){
             return dir;

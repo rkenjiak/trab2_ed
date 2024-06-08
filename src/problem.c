@@ -319,7 +319,7 @@ tset * range_query(tarv *avl, int qtd){
         temp.active = avl->active;
         temp.key.ddd = a;
         start = achar_inicio(avl,&temp);
-
+        
         temp.key.ddd = b;
         end = achar_fim(avl,&temp);
 
@@ -442,7 +442,7 @@ void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,ts
     }
 }
 
-void DesativarQuery(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset*sDDD){
+void DesativarQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD){
     int opc=-1;
     while(opc != 0){
         printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\n| Qual opção você deseja desativar: ");
@@ -450,27 +450,27 @@ void DesativarQuery(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset
             switch (opc)
             {
             case 1:
-                if(sNome != NULL) desalocaSet(sNome);
+                if(sNome != NULL) desalocaSet(*sNome);
                 sNome = NULL;            
                 avls->e1 = 0; 
                 break;
             case 2:
-                if(sLat != NULL) desalocaSet(sLat); 
+                if(sLat != NULL) desalocaSet(*sLat); 
                 sLat = NULL;   
                 avls->e2 = 0;           
                 break;
             case 3:
-                if(sLong != NULL) desalocaSet(sLong);   
+                if(sLong != NULL) desalocaSet(*sLong);   
                 sLong = NULL;           
                 avls->e3 = 0;
                 break;
             case 4:
-                if(sUf != NULL) desalocaSet(sUf);              
+                if(sUf != NULL) desalocaSet(*sUf);              
                 sUf = NULL;
                 avls->e4 = 0;
                 break;
             case 5:
-                if(sDDD != NULL) desalocaSet(sDDD);   
+                if(sDDD != NULL) desalocaSet(*sDDD);   
                 sDDD = NULL;            
                 avls->e5 = 0;
                 break;
@@ -481,4 +481,85 @@ void DesativarQuery(conjAVL *avls,tset *sNome,tset*sLat,tset*sLong,tset*sUf,tset
             continue;
         }
     }
+}
+
+void imprimeInfoCidade(thash *h_ibge, const char *cod, int tam){
+    tmunicipio *municipio = hash_busca(h_ibge, cod);
+    printf("| %s ", municipio->codigo_ibge);
+    printf("|%-*s ", tam, municipio->nome);
+    printf("| %2.4f ",municipio->latitude);
+    printf("| %2.4f ",municipio->longitude);
+    printf("| %d ",municipio->capital);
+    printf("| %d ",municipio->codigo_uf);
+    printf("| %d ",municipio->siafi_id);
+    printf("| %d ",municipio->ddd);
+    printf("| %s\n",municipio->fuso_horario);
+}
+void imprimeCabecalho(int tam){
+    printf("| cod_ibge ");
+    printf("|%*cnome ",tam,' ');
+    printf("| latitude ");
+    printf("| longitude ");
+    printf("| capital ");
+    printf("| uf ");
+    printf("| siafi_id ");
+    printf("| ddd ");
+    printf("| fuso_horario\n");
+}
+
+int maxTam(tset *set){
+    int max=0,a;
+    if(set==NULL) return 0;
+    for(int i=0;i<set->tam;i++){
+        a=strlen(set->lista[i]);
+        if(a>max) max = a;
+    }
+    return max;
+}
+
+void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD){
+    int opc=-1,tam,i;
+    tset *p1=NULL,*p2=NULL,*p3=NULL,*pfinal=NULL;
+    p1=interseccao(*sNome,*sLat);
+    p2=interseccao(p1,*sLong);
+    p3=interseccao(p2,*sUf);
+    pfinal=interseccao(p3,*sDDD);
+    tam = maxTam(pfinal);
+    while(opc!=0){
+        imprimeCabecalho(tam);
+        if(pfinal!=NULL)
+        for(i=0;i<pfinal->tam;i++){
+            imprimeInfoCidade(h_ibge,pfinal->lista[i],tam);
+        }
+        printf("| SORT_BY: (1) NOME  (2) LAT  (3) LONG  (4) UF  (5) DDD  (0) SAIR\n| Digite sua escolha: ");
+        if(scanf(" %d",&opc)==1){
+            switch (opc)
+            {
+            case 1:
+                 
+                break;
+            case 2:
+                          
+                break;
+            case 3:
+                
+                break;
+            case 4:
+                
+                break;
+            case 5:
+               
+                break;
+            }
+        }else {
+            printf("| Escolha inválida.\n");
+            while (getchar() != '\n');
+            continue;
+
+        }
+    }   
+    if(p1!=NULL)desalocaSet(p1);
+    if(p2!=NULL)desalocaSet(p2);
+    if(p3!=NULL)desalocaSet(p3);
+    if(pfinal!=NULL)desalocaSet(pfinal); 
 }

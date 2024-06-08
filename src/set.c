@@ -26,16 +26,20 @@ void insereSet(tset * set,const char * cod){ // strings de tam no max 9
 }
 
 tset * interseccao(tset *t1, tset *t2){
-    int i, j, mintam;
-    mintam = (t1->tam<t2->tam) ? t1->tam : t2->tam;
-    tset * new = criaSet(mintam);
-    for(i = 0; i<t1->tam;i++){
-        for(j = 0; j<t2->tam; j++){
-            if(strcmp(t1->lista[i],t2->lista[j]) == 0){
-                insereSet(new, t1->lista[i]);
-                break;
+    if(t1==NULL && t2==NULL)return NULL;
+    else if(t1==NULL) return t2;
+    else if(t2==NULL) return t1;
+    else{
+        int i, j, mintam;
+        mintam = (t1->tam<t2->tam) ? t1->tam : t2->tam;
+        tset * new = criaSet(mintam);
+        for(i = 0; i<t1->tam;i++){
+            for(j = 0; j<t2->tam; j++){
+                if(strcmp(t1->lista[i],t2->lista[j]) == 0){
+                    insereSet(new, t1->lista[i]);                    
+                }
             }
         }
-    }
-    return new;
+        return new;
+    }    
 }

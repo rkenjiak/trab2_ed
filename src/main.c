@@ -35,9 +35,10 @@ int main(){
                 AddEditQuery(&avls,&sNome,&sLat,&sLong,&sUf,&sDDD,qtd);             
                 break;
             case 2:
-                DesativarQuery(&avls,sNome,sLat,sLong,sUf,sDDD);
+                DesativarQuery(&avls,&sNome,&sLat,&sLong,&sUf,&sDDD);
                 break;
             case 3:
+                ShowInterseccao(&avls,&h_ibge,&sNome,&sLat,&sLong,&sUf,&sDDD);
                 break;
             }
         }else {
