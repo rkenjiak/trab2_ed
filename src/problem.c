@@ -468,7 +468,7 @@ void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD){
 void imprimeInfoCidade(thash *h_ibge, const char *cod, int tam){
     tmunicipio *municipio = hash_busca(h_ibge, cod);
     printf("|  %s ", municipio->codigo_ibge);
-    printf("| %*s ", tam+1, municipio->nome);
+    printf("| %*s ", tam+2, municipio->nome);
     printf("| %2.4f ",municipio->latitude);
     printf("|  %2.4f ",municipio->longitude);
     printf("| %7d ",municipio->capital);
@@ -479,7 +479,7 @@ void imprimeInfoCidade(thash *h_ibge, const char *cod, int tam){
 }
 void imprimeCabecalho(int tam){
     printf("| cod_ibge ");
-    printf("|%*cnome ",tam-2,' ');
+    printf("|%*cnome ",tam-1,' ');
     printf("| latitude ");
     printf("| longitude ");
     printf("| capital ");
