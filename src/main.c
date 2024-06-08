@@ -50,7 +50,14 @@ int main(){
             while (getchar() != '\n');
             continue;
         }
+        
     }
+    
+    desalocaSet(&sNome);
+    desalocaSet(&sLat);
+    desalocaSet(&sLong);
+    desalocaSet(&sUf);
+    desalocaSet(&sDDD);
         
     hash_apaga(&h_ibge);
     printf("Hash apagada.\n");
