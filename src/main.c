@@ -7,15 +7,16 @@
 int main(){
     thash h_ibge;
     tarv avl_nome, avl_lat, avl_long, avl_uf, avl_ddd;
-    tset *sNome,*sLat,*sLong,*sUf,*sDDD;
+    tset *sNome,*sLat,*sLong,*sUf,*sDDD,*sFinal;
     conjAVL avls;
+
     //conjSets cSets;
 
     int nbuckets = 15013;
     char leitura[40];
     int escolha = -1;
     int qtd;    
-    sNome=sLat=sLong=sUf=sDDD=NULL;
+    sNome=sLat=sLong=sUf=sDDD=sFinal=NULL;
 
     FILE *arquivo = fopen("./data/municipios.json", "r");
     if (arquivo == NULL) {
@@ -27,22 +28,19 @@ int main(){
     printf("Dados carregados.\n");
     
     while(escolha != 0){
-        showQueries(&sNome,&sLat,&sLong,&sUf,&sDDD);
+        showQueries(&sNome,&sLat,&sLong,&sUf,&sDDD,&sFinal);
         printf("|-------------MENU-------------|\n");
-        printf("| 0 - SAIR\n| 1 - ADICIONAR/EDITAR QUERY\n| 2 - DESATIVAR QUERY\n| 3 - IMPRIMIR QUERY\n");
+        printf("| 0 - SAIR\n| 1 - ADICIONAR/EDITAR QUERY\n| 2 - IMPRIMIR QUERY\n");
         printf("|------------------------------|\n");
         printf("| Digite sua escolha: ");
         if(scanf(" %d",&escolha) == 1) {
             switch (escolha)
             {
             case 1:
-                AddEditQuery(&avls,&sNome,&sLat,&sLong,&sUf,&sDDD,qtd);             
+                AddEditQuery(&avls,&sNome,&sLat,&sLong,&sUf,&sDDD,qtd,&sFinal);             
                 break;
             case 2:
-                DesativarQuery(&sNome,&sLat,&sLong,&sUf,&sDDD);
-                break;
-            case 3:
-                ShowInterseccao(&avls,&h_ibge,&sNome,&sLat,&sLong,&sUf,&sDDD);
+                ShowInterseccao(&avls,&h_ibge,&sNome,&sLat,&sLong,&sUf,&sDDD,&sFinal);
                 break;
             }
         }else {
@@ -52,7 +50,7 @@ int main(){
         }
         
     }
-    
+
     desalocaSet(&sNome);
     desalocaSet(&sLat);
     desalocaSet(&sLong);

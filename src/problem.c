@@ -354,8 +354,8 @@ void loop_insere_set(tset *set, tnode *start, tnode *end){
     }
 }
 
-void showQueries(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD){
-    printf("\n|--------------QUERIES----------------\n");
+void showQueries(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tset**sFinal){
+    printf("|\n|--------------QUERIES----------------\n");
     if(*sNome!=NULL){
         printf("| Há %d cidades na QUERY_NOME.\n",(*sNome)->tam);
     }else{
@@ -381,6 +381,12 @@ void showQueries(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD){
     }else{
         printf("| DESATIVADA - QUERY DDD\n");
     }    
+    if(*sFinal!=NULL){
+        printf("| Há %d cidades nas QUERIES selecionadas.\n",(*sFinal)->tam);
+    }else{
+        printf("| Não há nenhuma QUERY selecionada.\n");
+    }
+
 }
 
 void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd){
@@ -391,12 +397,12 @@ void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,
     avls->avl_ddd = avl_ddd;
 }
 
-void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,int qtd){
+void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,int qtd,tset**sFinal){
     int opc = -1;
-    while(opc != 0){
-        showQueries(sNome,sLat,sLong,sUf,sDDD);
+    while(opc != 0){        
+        showQueries(sNome,sLat,sLong,sUf,sDDD,sFinal);
         printf("|--------------------------------------------------------------------------\n");
-        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\n| Qual opção você deseja adicionar/editar: ");
+        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (6) DESATIVAR QUERY  (0) VOLTAR\n| Qual opção você deseja adicionar/editar: ");
         if(scanf(" %d", &opc) == 1){
             switch (opc)
             {
@@ -420,18 +426,25 @@ void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,ts
                 if(*sDDD != NULL) desalocaSet(sDDD);
                 *sDDD = range_query(avls->avl_ddd,qtd);  
                 break;
-            }
+            case 6:
+                DesativarQuery(sNome,sLat,sLong,sUf,sDDD,sFinal);
+                break;
+            }            
         }else {
             printf("| Escolha inválida.\n");
             while (getchar() != '\n');
             continue;
         }
+        desalocaSet(sFinal);
+        *sFinal=calculaInterseccao(sNome,sLat,sLong,sUf,sDDD);
     }
 }
 
-void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD){
+void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tset**sFinal){
     int opc=-1;
-    while(opc != 0){
+    while(opc != 0){        
+        showQueries(sNome,sLat,sLong,sUf,sDDD,sFinal);
+        printf("|--------------------------------------------------------------------------\n");
         printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\n| Qual opção você deseja desativar: ");
         if(scanf(" %d", &opc) == 1){
             switch (opc)
@@ -456,12 +469,14 @@ void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD){
                 if(*sDDD != NULL) desalocaSet(sDDD);   
                 *sDDD = NULL;       
                 break;
-            }
+            }            
         }else {
             printf("| Escolha inválida.\n");
             while (getchar() != '\n');
             continue;
         }
+        desalocaSet(sFinal);
+        *sFinal=calculaInterseccao(sNome,sLat,sLong,sUf,sDDD);
     }
 }
 
@@ -469,8 +484,8 @@ void imprimeInfoCidade(thash *h_ibge, const char *cod, int tam){
     tmunicipio *municipio = hash_busca(h_ibge, cod);
     printf("|  %s ", municipio->codigo_ibge);
     printf("| %-*s ", tam+1, municipio->nome);
-    printf("| %2.4f ",municipio->latitude);
-    printf("|  %2.4f ",municipio->longitude);
+    printf("| %8.4f ",municipio->latitude);
+    printf("|  %8.4f ",municipio->longitude);
     printf("| %7d ",municipio->capital);
     printf("| %d ",municipio->codigo_uf);
     printf("| %8d ",municipio->siafi_id);
@@ -511,19 +526,28 @@ int maxTam(tset *set,thash *h_ibge){
     return max;
 }
 
-void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD){
-    int opc=-1,tam,i;
+tset * calculaInterseccao(tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD){
     tset *p1=NULL,*p2=NULL,*p3=NULL,*pfinal=NULL;
     p1=interseccao(*sNome,*sLat);
     p2=interseccao(p1,*sLong);
     p3=interseccao(p2,*sUf);
     pfinal=interseccao(p3,*sDDD);
-    tam = maxTam(pfinal,h_ibge);
+    desalocaSet(&p1);
+    desalocaSet(&p2);
+    desalocaSet(&p3);
+    return pfinal;
+}
+
+void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD,tset**sFinal){
+    int opc=-1,tam,i;
+    desalocaSet(sFinal);
+    *sFinal=calculaInterseccao(sNome,sLat,sLong,sUf,sDDD);
+    tam = maxTam(*sFinal,h_ibge);
     while(opc!=0){
         imprimeCabecalho(tam);
-        if(pfinal!=NULL)
-        for(i=0;i<pfinal->tam;i++){
-            imprimeInfoCidade(h_ibge,pfinal->lista[i],tam);
+        if(sFinal!=NULL)
+        for(i=0;i<(*sFinal)->tam;i++){
+            imprimeInfoCidade(h_ibge,(*sFinal)->lista[i],tam);
         }
         printf("| SORT_BY: (1) NOME  (2) LAT  (3) LONG  (4) UF  (5) DDD  (0) SAIR\n| Digite sua escolha: ");
         if(scanf(" %d",&opc)==1){
@@ -552,8 +576,5 @@ void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset *
 
         }
     }   
-    if(p1!=NULL)desalocaSet(&p1);
-    if(p2!=NULL)desalocaSet(&p2);
-    if(p3!=NULL)desalocaSet(&p3);
-    if(pfinal!=NULL)desalocaSet(&pfinal); 
+    desalocaSet(sFinal); 
 }

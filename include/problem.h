@@ -42,7 +42,7 @@ typedef struct{
 }conjAVL;
 
 
-void showQueries(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD);
+void showQueries(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tset**sFinal);
 char *get_key_ibge(void *reg);
 int cmp (void *a, void *b, int active);
 void criarAVL(tarv *parv, int active, int (*cmp)(void*,void*,int),void (*freefunc)(void*));
@@ -53,10 +53,10 @@ void carregaDados(conjAVL *avls, thash *h_ibge,int nbuckets,tarv *avl_nome,tarv 
 void loop_insere_set(tset *set, tnode *start, tnode *end);
 tset * range_query(tarv *avl,int qtd);
 void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd);
-void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,int qtd);
-void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD);
-void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD);
-
+void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,int qtd,tset**sFinal);
+void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tset**sFinal);
+void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD,tset**sFinal);
+tset * calculaInterseccao(tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD);
 
 
 #endif
