@@ -489,13 +489,23 @@ void imprimeCabecalho(int tam){
     printf("| fuso_horario\n");
 }
 
+int utf8_strlen(const char *s) {
+    int i = 0, j = 0;
+    while (s[i]) {
+        if ((s[i] & 0xc0) != 0x80)
+            j++;
+        i++;
+    }
+    return j;
+}
+
 int maxTam(tset *set,thash *h_ibge){
     int max=0,a;
     tmunicipio *municipio;
     if(set==NULL) return 0;
     for(int i=0;i<set->tam;i++){
         municipio = hash_busca(h_ibge, set->lista[i]);
-        a=strlen(municipio->nome);
+        a=utf8_strlen(municipio->nome);
         if(a>max) max = a;
     }
     return max;
