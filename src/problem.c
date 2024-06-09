@@ -1,5 +1,4 @@
 #include "../include/problem.h"
-#define EPSILON 0.000001
 
 char *get_key_ibge(void *reg) {
     return ((tmunicipio *)reg)->codigo_ibge;
@@ -23,15 +22,15 @@ int cmp (void *a, void *b, int active){
     case 2:
         arg1_f = ((tcity *)a)->key.latitude;
         arg2_f = ((tcity *)b)->key.latitude;
-        if(arg1_f-arg2_f<EPSILON) return -1;
-        if(arg1_f-arg2_f>EPSILON) return 1;
+        if(arg1_f<arg2_f) return -1;
+        if(arg1_f>arg2_f) return 1;
         return 0;
         break;
     case 3:
         arg1_f = ((tcity *)a)->key.longitude;
         arg2_f = ((tcity *)b)->key.longitude;
-        if(arg1_f-arg2_f<EPSILON) return -1;
-        if(arg1_f-arg2_f>EPSILON) return 1;
+        if(arg1_f<arg2_f) return -1;
+        if(arg1_f>arg2_f) return 1;
         return 0;
         break;
     case 4:
@@ -568,10 +567,20 @@ int cmp_nome(const void*a,const void*b){
     return strcasecmp(((tmunicipio*)a)->nome,((tmunicipio*)b)->nome);
 }
 int cmp_lat(const void*a,const void*b){
-    return ((tmunicipio*)a)->latitude-((tmunicipio*)b)->latitude;    
+    float arg1_f,arg2_f;   
+    arg1_f = ((tmunicipio *)a)->latitude;
+    arg2_f = ((tmunicipio *)b)->latitude;
+    if(arg1_f<arg2_f) return -1;
+    if(arg1_f>arg2_f) return 1;
+    return 0;
 }
 int cmp_long(const void*a,const void*b){
-    return ((tmunicipio*)a)->longitude-((tmunicipio*)b)->longitude;    
+    float arg1_f,arg2_f;   
+    arg1_f = ((tmunicipio *)a)->longitude;
+    arg2_f = ((tmunicipio *)b)->longitude;
+    if(arg1_f<arg2_f) return -1;
+    if(arg1_f>arg2_f) return 1;
+    return 0;   
 }
 int cmp_uf(const void*a,const void*b){
     return ((tmunicipio*)a)->codigo_uf-((tmunicipio*)b)->codigo_uf;    
