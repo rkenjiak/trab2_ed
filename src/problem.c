@@ -15,7 +15,7 @@ int cmp (void *a, void *b, int active){
     switch (active)
     {
     case 1:  // strcasecmp? strings.h      
-        int resultado = strcasecmp(((tcity *)a)->key.nome,((tcity *)b)->key.nome);
+        resultado = strcasecmp(((tcity *)a)->key.nome,((tcity *)b)->key.nome);
         if(resultado<0) return -1;
         if(resultado>0) return 1;
         return 0;
@@ -540,6 +540,7 @@ tset * calculaInterseccao(tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset 
 
 void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD,tset**sFinal){
     int opc=-1,tam,i;
+    //int tamanho = 10; 
     desalocaSet(sFinal);
     *sFinal=calculaInterseccao(sNome,sLat,sLong,sUf,sDDD);
     tam = maxTam(*sFinal,h_ibge);
@@ -554,18 +555,23 @@ void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset *
             switch (opc)
             {
             case 1:
+                ordenarMunicipios((*sFinal)->lista, (*sFinal)->tam, 1,h_ibge);
                  
                 break;
             case 2:
+                ordenarMunicipios((*sFinal)->lista, (*sFinal)->tam, 2,h_ibge);
                           
                 break;
             case 3:
+                ordenarMunicipios((*sFinal)->lista, (*sFinal)->tam, 3,h_ibge);
                 
                 break;
             case 4:
+                ordenarMunicipios((*sFinal)->lista, (*sFinal)->tam, 4,h_ibge);
                 
                 break;
             case 5:
+                ordenarMunicipios((*sFinal)->lista, (*sFinal)->tam, 5,h_ibge);
                
                 break;
             }
@@ -577,4 +583,81 @@ void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset *
         }
     }   
     desalocaSet(sFinal); 
+}
+
+void ordenarMunicipios(char *cod[], int tamanho, int escolha,thash*h_ibge) {
+    mergeSort(cod, 0, tamanho - 1, escolha,h_ibge);
+}
+
+int cmp_sort(const void *a, const void *b, int escolha, thash *h_ibge) {
+    tmunicipio *munA = hash_busca(h_ibge,(char*)a);
+    tmunicipio *munB = hash_busca(h_ibge,(char*)b);
+
+    switch(escolha) 
+    {
+    case 1:
+        return strcasecmp(munA->nome, munB->nome);
+    case 2:
+        return (munA->latitude > munB->latitude) - (munA->latitude < munB->latitude);
+    case 3:
+        return (munA->longitude > munB->longitude) - (munA->longitude < munB->longitude);
+    case 4:
+        return munA->codigo_uf - munB->codigo_uf;
+    case 5:
+        return munA->ddd - munB->ddd;
+    }
+}
+
+void merge(char *arr[], int l, int m, int r, int escolha,thash*h_ibge) {
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    char **L = (char **)malloc(n1 * sizeof(char *));
+    char **R = (char **)malloc(n2 * sizeof(char *));
+
+    for (i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+
+    i = 0;
+    j = 0;
+    k = l;
+    while (i < n1 && j < n2) {
+        if (cmp_sort(&L[i], &R[j], escolha,h_ibge) <= 0) {
+            arr[k] = L[i];
+            i++;
+        } else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+
+    free(L);
+    free(R);
+}
+
+void mergeSort(char *arr[], int l, int r, int escolha,thash *h_ibge) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+
+        mergeSort(arr, l, m, escolha,h_ibge);
+        mergeSort(arr, m + 1, r, escolha,h_ibge);
+
+        merge(arr, l, m, r, escolha,h_ibge);
+    }
 }

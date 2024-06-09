@@ -57,6 +57,7 @@ void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,ts
 void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tset**sFinal);
 void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD,tset**sFinal);
 tset * calculaInterseccao(tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD);
-
+void ordenarMunicipios(char *cod[], int tamanho, int escolha,thash*h_ibge);
+void mergeSort(char *arr[], int l, int r, int escolha,thash *h_ibge);
 
 #endif
