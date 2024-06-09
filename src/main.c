@@ -9,8 +9,7 @@ int main(){
     tarv avl_nome, avl_lat, avl_long, avl_uf, avl_ddd;
     tset *sNome,*sLat,*sLong,*sUf,*sDDD,*sFinal;
     conjAVL avls;
-
-    //conjSets cSets;
+    tmunicipio *vetor;
 
     int nbuckets = 15013;
     char leitura[40];
@@ -40,7 +39,7 @@ int main(){
                 AddEditQuery(&avls,&sNome,&sLat,&sLong,&sUf,&sDDD,qtd,&sFinal);             
                 break;
             case 2:
-                ShowInterseccao(&avls,&h_ibge,&sNome,&sLat,&sLong,&sUf,&sDDD,&sFinal);
+                ShowInterseccao(&avls,&h_ibge,&sNome,&sLat,&sLong,&sUf,&sDDD,&sFinal,&vetor);
                 break;
             }
         }else {

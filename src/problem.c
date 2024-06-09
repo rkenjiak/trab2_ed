@@ -492,6 +492,17 @@ void imprimeInfoCidade(thash *h_ibge, const char *cod, int tam){
     printf("| %3d ",municipio->ddd);
     printf("| %s\n",municipio->fuso_horario);
 }
+void imprimeInfoCidade2(tmunicipio *municipio, int tam){
+    printf("|  %s ", municipio->codigo_ibge);
+    printf("| %-*s ", tam+1, municipio->nome);
+    printf("| %8.4f ",municipio->latitude);
+    printf("|  %8.4f ",municipio->longitude);
+    printf("| %7d ",municipio->capital);
+    printf("| %d ",municipio->codigo_uf);
+    printf("| %8d ",municipio->siafi_id);
+    printf("| %3d ",municipio->ddd);
+    printf("| %s\n",municipio->fuso_horario);
+}
 void imprimeCabecalho(int tam){
     printf("| cod_ibge ");
     printf("| nome%*c ",tam-3,' ');
@@ -538,126 +549,84 @@ tset * calculaInterseccao(tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset 
     return pfinal;
 }
 
-void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD,tset**sFinal){
-    int opc=-1,tam,i;
-    //int tamanho = 10; 
+void criaVetor(tset *sFinal, tmunicipio ** vetor,thash *h_ibge){
+    if(sFinal==NULL) return;
+    tmunicipio *temp;
+    size_t tam = sizeof(tmunicipio);
+    (*vetor) = (tmunicipio*)malloc(sFinal->tam*sizeof(tmunicipio));
+    for(int i=0;i<sFinal->tam;i++){
+        temp=hash_busca(h_ibge,sFinal->lista[i]);
+        memcpy((*vetor)+i,temp,tam);
+    }
+}
+void destroiVertor(tset *tFinal,tmunicipio ** vetor){
+    free(*vetor);
+    *vetor = NULL;
+}
+
+int cmp_nome(const void*a,const void*b){
+    return strcasecmp(((tmunicipio*)a)->nome,((tmunicipio*)b)->nome);
+}
+int cmp_lat(const void*a,const void*b){
+    return ((tmunicipio*)a)->latitude-((tmunicipio*)b)->latitude;    
+}
+int cmp_long(const void*a,const void*b){
+    return ((tmunicipio*)a)->longitude-((tmunicipio*)b)->longitude;    
+}
+int cmp_uf(const void*a,const void*b){
+    return ((tmunicipio*)a)->codigo_uf-((tmunicipio*)b)->codigo_uf;    
+}
+int cmp_ddd(const void*a,const void*b){
+    return ((tmunicipio*)a)->ddd-((tmunicipio*)b)->ddd;
+}
+
+void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD,tset**sFinal,tmunicipio **vetor){
+    int opc=-1,tam,i,sorted=0;
     desalocaSet(sFinal);
     *sFinal=calculaInterseccao(sNome,sLat,sLong,sUf,sDDD);
     tam = maxTam(*sFinal,h_ibge);
+    criaVetor(*sFinal,vetor,h_ibge);
+
     while(opc!=0){
         imprimeCabecalho(tam);
         if(sFinal!=NULL)
-        for(i=0;i<(*sFinal)->tam;i++){
+        for(i=0;i<(*sFinal)->tam && !sorted;i++){
             imprimeInfoCidade(h_ibge,(*sFinal)->lista[i],tam);
+        }
+        for(i=0;i<(*sFinal)->tam && sorted;i++){
+            imprimeInfoCidade2((*vetor)+i,tam);
         }
         printf("| SORT_BY: (1) NOME  (2) LAT  (3) LONG  (4) UF  (5) DDD  (0) SAIR\n| Digite sua escolha: ");
         if(scanf(" %d",&opc)==1){
             switch (opc)
             {
             case 1:
-                ordenarMunicipios((*sFinal)->lista, (*sFinal)->tam, 1,h_ibge);
-                 
+                sorted=1;
+                qsort(*vetor,(*sFinal)->tam,sizeof(tmunicipio),cmp_nome);                 
                 break;
             case 2:
-                ordenarMunicipios((*sFinal)->lista, (*sFinal)->tam, 2,h_ibge);
-                          
+                sorted=1;
+                qsort(*vetor,(*sFinal)->tam,sizeof(tmunicipio),cmp_lat);                          
                 break;
             case 3:
-                ordenarMunicipios((*sFinal)->lista, (*sFinal)->tam, 3,h_ibge);
-                
+                sorted=1;
+                qsort(*vetor,(*sFinal)->tam,sizeof(tmunicipio),cmp_long);
                 break;
             case 4:
-                ordenarMunicipios((*sFinal)->lista, (*sFinal)->tam, 4,h_ibge);
-                
+                sorted=1;
+                qsort(*vetor,(*sFinal)->tam,sizeof(tmunicipio),cmp_uf);
                 break;
             case 5:
-                ordenarMunicipios((*sFinal)->lista, (*sFinal)->tam, 5,h_ibge);
-               
+                sorted=1;
+                qsort(*vetor,(*sFinal)->tam,sizeof(tmunicipio),cmp_ddd);
                 break;
             }
         }else {
             printf("| Escolha inválida.\n");
             while (getchar() != '\n');
             continue;
-
         }
     }   
+    destroiVertor(*sFinal,vetor);
     desalocaSet(sFinal); 
-}
-
-void ordenarMunicipios(char *cod[], int tamanho, int escolha,thash*h_ibge) {
-    mergeSort(cod, 0, tamanho - 1, escolha,h_ibge);
-}
-
-int cmp_sort(const void *a, const void *b, int escolha, thash *h_ibge) {
-    tmunicipio *munA = hash_busca(h_ibge,(char*)a);
-    tmunicipio *munB = hash_busca(h_ibge,(char*)b);
-
-    switch(escolha) 
-    {
-    case 1:
-        return strcasecmp(munA->nome, munB->nome);
-    case 2:
-        return (munA->latitude > munB->latitude) - (munA->latitude < munB->latitude);
-    case 3:
-        return (munA->longitude > munB->longitude) - (munA->longitude < munB->longitude);
-    case 4:
-        return munA->codigo_uf - munB->codigo_uf;
-    case 5:
-        return munA->ddd - munB->ddd;
-    }
-}
-
-void merge(char *arr[], int l, int m, int r, int escolha,thash*h_ibge) {
-    int i, j, k;
-    int n1 = m - l + 1;
-    int n2 = r - m;
-
-    char **L = (char **)malloc(n1 * sizeof(char *));
-    char **R = (char **)malloc(n2 * sizeof(char *));
-
-    for (i = 0; i < n1; i++)
-        L[i] = arr[l + i];
-    for (j = 0; j < n2; j++)
-        R[j] = arr[m + 1 + j];
-
-    i = 0;
-    j = 0;
-    k = l;
-    while (i < n1 && j < n2) {
-        if (cmp_sort(&L[i], &R[j], escolha,h_ibge) <= 0) {
-            arr[k] = L[i];
-            i++;
-        } else {
-            arr[k] = R[j];
-            j++;
-        }
-        k++;
-    }
-
-    while (i < n1) {
-        arr[k] = L[i];
-        i++;
-        k++;
-    }
-
-    while (j < n2) {
-        arr[k] = R[j];
-        j++;
-        k++;
-    }
-
-    free(L);
-    free(R);
-}
-
-void mergeSort(char *arr[], int l, int r, int escolha,thash *h_ibge) {
-    if (l < r) {
-        int m = l + (r - l) / 2;
-
-        mergeSort(arr, l, m, escolha,h_ibge);
-        mergeSort(arr, m + 1, r, escolha,h_ibge);
-
-        merge(arr, l, m, r, escolha,h_ibge);
-    }
 }

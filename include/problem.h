@@ -55,9 +55,11 @@ tset * range_query(tarv *avl,int qtd);
 void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd);
 void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,int qtd,tset**sFinal);
 void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tset**sFinal);
-void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD,tset**sFinal);
+void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD,tset**sFinal,tmunicipio **vetor);
 tset * calculaInterseccao(tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD);
-void ordenarMunicipios(char *cod[], int tamanho, int escolha,thash*h_ibge);
-void mergeSort(char *arr[], int l, int r, int escolha,thash *h_ibge);
+void criaVetor(tset *tFinal, tmunicipio ** vetor,thash *h_ibge);
+void destroiVertor(tset *tFinal,tmunicipio ** vetor);
+
+
 
 #endif
