@@ -243,90 +243,114 @@ tset * range_query(tarv *avl, int qtd){
         break;
     case 2:
         printf("| Digite os 2 valores (float) de latitude que deseja buscar: ");
-        scanf("%f %f", &c, &d);
-        if(c>d){
-            auxf = c;
-            c = d;
-            d = auxf;
-        }
-        temp.active = avl->active;
-        temp.key.latitude = c;
-        start = achar_inicio(avl,&temp);
+        if(scanf("%f %f", &c, &d)==2){
+            if(c>d){
+                auxf = c;
+                c = d;
+                d = auxf;
+            }
+            temp.active = avl->active;
+            temp.key.latitude = c;
+            start = achar_inicio(avl,&temp);
 
-        temp.key.latitude = d;
-        end = achar_fim(avl,&temp);
+            temp.key.latitude = d;
+            end = achar_fim(avl,&temp);
 
-        if(start == NULL || end == NULL){
+            if(start == NULL || end == NULL){
+                desalocaSet(&new);
+                new = NULL;
+            }else{
+                loop_insere_set(new,start,end);
+            }
+        }else{
             desalocaSet(&new);
             new = NULL;
-        }else{
-            loop_insere_set(new,start,end);
+            printf("| Escolha inválida.\n");
+            while (getchar() != '\n');
         }
         break;
     case 3:
         printf("| Digite os 2 valores (float) de longitude que deseja buscar: ");
-        scanf("%f %f", &c, &d);
-        if(c>d){
-            auxf = c;
-            c = d;
-            d = auxf;
-        }
-        temp.active = avl->active;
-        temp.key.longitude = c;
-        start = achar_inicio(avl,&temp);
+        if(scanf("%f %f", &c, &d)==2){
+            if(c>d){
+                auxf = c;
+                c = d;
+                d = auxf;
+            }
+            temp.active = avl->active;
+            temp.key.longitude = c;
+            start = achar_inicio(avl,&temp);
 
-        temp.key.longitude = d;
-        end = achar_fim(avl,&temp);
+            temp.key.longitude = d;
+            end = achar_fim(avl,&temp);
 
-        if(start == NULL || end == NULL){
+            if(start == NULL || end == NULL){
+                desalocaSet(&new);
+                new = NULL;
+            }else{
+                loop_insere_set(new,start,end);
+            }
+        }else{
             desalocaSet(&new);
             new = NULL;
-        }else{
-            loop_insere_set(new,start,end);
+            printf("| Escolha inválida.\n");
+            while (getchar() != '\n');
         }
         break;
     case 4:
         printf("| Digite os 2 valores (int) de codigo_uf que deseja buscar: ");
-        scanf("%d %d", &a, &b);
-        if(a>b){
-            auxi = a;
-            a = b;
-            b = auxi;
-        }
-        temp.active = avl->active;
-        temp.key.codigo_uf = a;
-        start = achar_inicio(avl,&temp);
+        if(scanf("%d %d", &a, &b)==2){
+            if(a>b){
+                auxi = a;
+                a = b;
+                b = auxi;
+            }
+            temp.active = avl->active;
+            temp.key.codigo_uf = a;
+            start = achar_inicio(avl,&temp);
 
-        temp.key.codigo_uf = b;
-        end = achar_fim(avl,&temp);
+            temp.key.codigo_uf = b;
+            end = achar_fim(avl,&temp);
 
-        if(start == NULL || end == NULL){
+            if(start == NULL || end == NULL){
+                desalocaSet(&new);
+                new = NULL;
+            }else{
+                loop_insere_set(new,start,end);
+            }
+        }else{
             desalocaSet(&new);
             new = NULL;
-        }else{
-            loop_insere_set(new,start,end);
+            printf("| Escolha inválida.\n");
+            while (getchar() != '\n');
         }
         break;
     case 5:   
         printf("| Digite os 2 valores (int) de ddd que deseja buscar: ");
-        scanf("%d %d", &a, &b);
-        if(a>b){
-            auxi = a;
-            a = b;
-            b = auxi;
-        }
-        temp.active = avl->active;
-        temp.key.ddd = a;
-        start = achar_inicio(avl,&temp);
-        
-        temp.key.ddd = b;
-        end = achar_fim(avl,&temp);
+        if(scanf("%d %d", &a, &b)==2){
+            if(a>b){
+                auxi = a;
+                a = b;
+                b = auxi;
+            }
+            temp.active = avl->active;
+            temp.key.ddd = a;
+            start = achar_inicio(avl,&temp);
+            
+            temp.key.ddd = b;
+            end = achar_fim(avl,&temp);
 
-        if(start == NULL || end == NULL){
+            if(start == NULL || end == NULL){
+                desalocaSet(&new);
+                new = NULL;
+            }else{
+                loop_insere_set(new,start,end);
+            }
+        }else{
             desalocaSet(&new);
             new = NULL;
-        }else{
-            loop_insere_set(new,start,end);
+            printf("| Escolha inválida.\n");
+            while (getchar() != '\n');
         }
         break;    
     }
@@ -598,15 +622,16 @@ void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset *
 
     while(opc!=0){
         imprimeCabecalho(tam);
-        if(sFinal!=NULL)
+        if(*sFinal!=NULL)
         for(i=0;i<(*sFinal)->tam && !sorted;i++){
             imprimeInfoCidade(h_ibge,(*sFinal)->lista[i],tam);
         }
+        if(*sFinal!=NULL)
         for(i=0;i<(*sFinal)->tam && sorted;i++){
             imprimeInfoCidade2((*vetor)+i,tam);
         }
         printf("| SORT_BY: (1) NOME  (2) LAT  (3) LONG  (4) UF  (5) DDD  (0) SAIR\n| Digite sua escolha: ");
-        if(scanf(" %d",&opc)==1){
+        if(scanf(" %d",&opc)==1 && *sFinal!=NULL){
             switch (opc)
             {
             case 1:
@@ -637,5 +662,5 @@ void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset *
         }
     }   
     destroiVertor(*sFinal,vetor);
-    desalocaSet(sFinal); 
+    //desalocaSet(sFinal); 
 }

@@ -55,6 +55,7 @@ int main(){
     desalocaSet(&sLong);
     desalocaSet(&sUf);
     desalocaSet(&sDDD);
+    desalocaSet(&sFinal);
         
     hash_apaga(&h_ibge);
     printf("Hash apagada.\n");
