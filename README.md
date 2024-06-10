@@ -1,6 +1,10 @@
-## Para compilar diretamente quando estiver em ~/trab2_ed/
+## Para compilar diretamente quando estiver em ~/trab2_ed/ no WINDOWS
 ```
 gcc -o test .\src\main.c .\src\avl.c .\src\hash.c .\src\linkedlist.c .\src\problem.c .\src\set.c
+```
+## Para compilar diretamente quando estiver em ~/trab2_ed/ no LINUX
+```
+gcc -o test ./src/main.c ./src/avl.c ./src/hash.c ./src/linkedlist.c ./src/problem.c ./src/set.c 
 ```
 
 
