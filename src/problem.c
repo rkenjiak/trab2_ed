@@ -214,7 +214,7 @@ tset * range_query(tarv *avl, int qtd){
     tset * new = criaSet(qtd);
     tnode * start;
     tnode * end;
-    tnode * auxiliar;
+    tnode ** auxiliar;
     tcity temp;
     switch (avl->active)
     {
@@ -236,10 +236,10 @@ tset * range_query(tarv *avl, int qtd){
         end = achar_fim(avl,&temp);       
 
         if (end!=NULL){
-            auxiliar = *(sucessor(&end));
+            auxiliar = sucessor(&end);
         } 
 
-        if(start == NULL || end == NULL || auxiliar == start){
+        if(start == NULL || end == NULL || (auxiliar!=NULL && *auxiliar == start)){
             desalocaSet(&new);
             new = NULL;
         }else{
@@ -262,10 +262,10 @@ tset * range_query(tarv *avl, int qtd){
             end = achar_fim(avl,&temp);
 
             if (end!=NULL){
-                auxiliar = *(sucessor(&end));
+                auxiliar = sucessor(&end);
             } 
 
-            if(start == NULL || end == NULL || auxiliar==start){
+            if(start == NULL || end == NULL || (auxiliar!=NULL && *auxiliar==start)){
                 desalocaSet(&new);
                 new = NULL;
             }else{
@@ -294,10 +294,10 @@ tset * range_query(tarv *avl, int qtd){
             end = achar_fim(avl,&temp);
 
             if (end!=NULL){
-                auxiliar = *(sucessor(&end));
+                auxiliar = sucessor(&end);
             } 
 
-            if(start == NULL || end == NULL || auxiliar==start){
+            if(start == NULL || end == NULL || (auxiliar!=NULL && *auxiliar==start)){
                 desalocaSet(&new);
                 new = NULL;
             }else{
@@ -326,10 +326,10 @@ tset * range_query(tarv *avl, int qtd){
             end = achar_fim(avl,&temp);
 
             if (end!=NULL){
-                auxiliar = *(sucessor(&end));
+                auxiliar = sucessor(&end);
             } 
 
-            if(start == NULL || end == NULL|| auxiliar==start){
+            if(start == NULL || end == NULL|| (auxiliar!=NULL && *auxiliar==start)){
                 desalocaSet(&new);
                 new = NULL;
             }else{
@@ -358,10 +358,10 @@ tset * range_query(tarv *avl, int qtd){
             end = achar_fim(avl,&temp);
 
             if (end!=NULL){
-                auxiliar = *(sucessor(&end));
+                auxiliar = sucessor(&end);
             } 
 
-            if(start == NULL || end == NULL||auxiliar==start){
+            if(start == NULL || end == NULL||(auxiliar!=NULL && *auxiliar==start)){
                 desalocaSet(&new);
                 new = NULL;
             }else{
