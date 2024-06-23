@@ -206,7 +206,7 @@ void carregaDados(conjAVL *avls,thash *h_ibge,int nbuckets,tarv *avl_nome,tarv *
 
 
 tset * range_query(tarv *avl, int qtd){
-    int a, b, auxi;
+    int a, b, auxi, igual = 0;
     float c, d, auxf;
     char palavra_1[40];
     char palavra_2[40];
@@ -214,13 +214,14 @@ tset * range_query(tarv *avl, int qtd){
     tset * new = criaSet(qtd);
     tnode * start;
     tnode * end;
+    tnode * auxiliar;
     tcity temp;
     switch (avl->active)
     {
     case 1:        
-        printf("| Digite uma palavra para pesquisar através do nome: ");
+        printf("| Digite uma palavra para pesquisar atraves do nome: ");
         scanf(" %[^\n]",palavra_1);
-        printf("| Digite outra palavra para pesquisar através do nome: ");
+        printf("| Digite outra palavra para pesquisar atraves do nome: ");
         scanf(" %[^\n]",palavra_2);
         if(strcasecmp(palavra_1,palavra_2)>0){
             strcpy(aux,palavra_1);
@@ -232,9 +233,13 @@ tset * range_query(tarv *avl, int qtd){
         start = achar_inicio(avl,&temp);
 
         strcpy(temp.key.nome,palavra_2);
-        end = achar_fim(avl,&temp);
+        end = achar_fim(avl,&temp);       
 
-        if(start == NULL || end == NULL){
+        if (end!=NULL){
+            auxiliar = *(sucessor(&end));
+        } 
+
+        if(start == NULL || end == NULL || auxiliar == start){
             desalocaSet(&new);
             new = NULL;
         }else{
@@ -256,7 +261,11 @@ tset * range_query(tarv *avl, int qtd){
             temp.key.latitude = d;
             end = achar_fim(avl,&temp);
 
-            if(start == NULL || end == NULL){
+            if (end!=NULL){
+                auxiliar = *(sucessor(&end));
+            } 
+
+            if(start == NULL || end == NULL || auxiliar==start){
                 desalocaSet(&new);
                 new = NULL;
             }else{
@@ -265,7 +274,7 @@ tset * range_query(tarv *avl, int qtd){
         }else{
             desalocaSet(&new);
             new = NULL;
-            printf("| Escolha inválida.\n");
+            printf("| Escolha invalida.\n");
             while (getchar() != '\n');
         }
         break;
@@ -284,7 +293,11 @@ tset * range_query(tarv *avl, int qtd){
             temp.key.longitude = d;
             end = achar_fim(avl,&temp);
 
-            if(start == NULL || end == NULL){
+            if (end!=NULL){
+                auxiliar = *(sucessor(&end));
+            } 
+
+            if(start == NULL || end == NULL || auxiliar==start){
                 desalocaSet(&new);
                 new = NULL;
             }else{
@@ -293,7 +306,7 @@ tset * range_query(tarv *avl, int qtd){
         }else{
             desalocaSet(&new);
             new = NULL;
-            printf("| Escolha inválida.\n");
+            printf("| Escolha invalida.\n");
             while (getchar() != '\n');
         }
         break;
@@ -312,7 +325,11 @@ tset * range_query(tarv *avl, int qtd){
             temp.key.codigo_uf = b;
             end = achar_fim(avl,&temp);
 
-            if(start == NULL || end == NULL){
+            if (end!=NULL){
+                auxiliar = *(sucessor(&end));
+            } 
+
+            if(start == NULL || end == NULL|| auxiliar==start){
                 desalocaSet(&new);
                 new = NULL;
             }else{
@@ -321,7 +338,7 @@ tset * range_query(tarv *avl, int qtd){
         }else{
             desalocaSet(&new);
             new = NULL;
-            printf("| Escolha inválida.\n");
+            printf("| Escolha invalida.\n");
             while (getchar() != '\n');
         }
         break;
@@ -340,7 +357,11 @@ tset * range_query(tarv *avl, int qtd){
             temp.key.ddd = b;
             end = achar_fim(avl,&temp);
 
-            if(start == NULL || end == NULL){
+            if (end!=NULL){
+                auxiliar = *(sucessor(&end));
+            } 
+
+            if(start == NULL || end == NULL||auxiliar==start){
                 desalocaSet(&new);
                 new = NULL;
             }else{
@@ -349,7 +370,7 @@ tset * range_query(tarv *avl, int qtd){
         }else{
             desalocaSet(&new);
             new = NULL;
-            printf("| Escolha inválida.\n");
+            printf("| Escolha invalida.\n");
             while (getchar() != '\n');
         }
         break;    
@@ -378,36 +399,36 @@ void loop_insere_set(tset *set, tnode *start, tnode *end){
 }
 
 void showQueries(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tset**sFinal){
-    printf("|\n|--------------QUERIES----------------\n");
+    printf("|\n|-----------------QUERIES------------------|\n");
     if(*sNome!=NULL){
-        printf("| Há %d cidades na QUERY_NOME.\n",(*sNome)->tam);
+        printf("| Ha %d cidades na QUERY_NOME.\n",(*sNome)->tam);
     }else{
         printf("| DESATIVADA - QUERY NOME\n");
     }
     if(*sLat!=NULL){
-        printf("| Há %d cidades na QUERY_LATITUDE.\n",(*sLat)->tam);
+        printf("| Ha %d cidades na QUERY_LATITUDE.\n",(*sLat)->tam);
     }else{
         printf("| DESATIVADA - QUERY LATITUDE\n");
     }
     if(*sLong!=NULL){
-        printf("| Há %d cidades na QUERY_LONGITUDE.\n",(*sLong)->tam);
+        printf("| Ha %d cidades na QUERY_LONGITUDE.\n",(*sLong)->tam);
     }else{
         printf("| DESATIVADA - QUERY LONGITUDE\n");
     }
     if(*sUf!=NULL){
-        printf("| Há %d cidades na QUERY_CODIGO_UF.\n",(*sUf)->tam);
+        printf("| Ha %d cidades na QUERY_CODIGO_UF.\n",(*sUf)->tam);
     }else{
         printf("| DESATIVADA - QUERY CODIGO_UF\n");
     }
     if(*sDDD!=NULL){
-        printf("| Há %d cidades na QUERY_DDD.\n",(*sDDD)->tam);
+        printf("| Ha %d cidades na QUERY_DDD.\n",(*sDDD)->tam);
     }else{
         printf("| DESATIVADA - QUERY DDD\n");
     }    
     if(*sFinal!=NULL){
-        printf("| Há %d cidades nas QUERIES selecionadas.\n",(*sFinal)->tam);
+        printf("| Ha %d cidades nas QUERIES selecionadas.\n",(*sFinal)->tam);
     }else{
-        printf("| Não há nenhuma QUERY selecionada.\n");
+        printf("| Nao ha nenhuma QUERY selecionada.\n");
     }
 
 }
@@ -424,8 +445,8 @@ void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,ts
     int opc = -1;
     while(opc != 0){        
         showQueries(sNome,sLat,sLong,sUf,sDDD,sFinal);
-        printf("|--------------------------------------------------------------------------\n");
-        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (6) DESATIVAR QUERY  (0) VOLTAR\n| Qual opção você deseja adicionar/editar: ");
+        printf("|-----------------------------------------------------------------------------------------------\n");
+        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (6) DESATIVAR QUERY  (0) VOLTAR\n| Qual opcao voce deseja adicionar/editar: ");
         if(scanf(" %d", &opc) == 1){
             switch (opc)
             {
@@ -454,7 +475,7 @@ void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,ts
                 break;
             }            
         }else {
-            printf("| Escolha inválida.\n");
+            printf("| Escolha invalida.\n");
             while (getchar() != '\n');
             continue;
         }
@@ -468,7 +489,7 @@ void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tse
     while(opc != 0){        
         showQueries(sNome,sLat,sLong,sUf,sDDD,sFinal);
         printf("|--------------------------------------------------------------------------\n");
-        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\n| Qual opção você deseja desativar: ");
+        printf("| (1) NOME  (2) LATITUDE  (3) LONGITUDE  (4) CODIGO_UF  (5) DDD  (0) VOLTAR\n| Qual opcao voce deseja desativar: ");
         if(scanf(" %d", &opc) == 1){
             switch (opc)
             {
@@ -656,7 +677,7 @@ void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset *
                 break;
             }
         }else {
-            printf("| Escolha inválida.\n");
+            printf("| Escolha invalida.\n");
             while (getchar() != '\n');
             continue;
         }

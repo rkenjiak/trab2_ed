@@ -28,9 +28,9 @@ int main(){
     
     while(escolha != 0){
         showQueries(&sNome,&sLat,&sLong,&sUf,&sDDD,&sFinal);
-        printf("|-------------MENU-------------|\n");
+        printf("|-------------------MENU-------------------|\n");
         printf("| 0 - SAIR\n| 1 - ADICIONAR/EDITAR QUERY\n| 2 - IMPRIMIR QUERY\n");
-        printf("|------------------------------|\n");
+        printf("|------------------------------------------|\n");
         printf("| Digite sua escolha: ");
         if(scanf(" %d",&escolha) == 1) {
             switch (escolha)
@@ -43,7 +43,7 @@ int main(){
                 break;
             }
         }else {
-            printf("| Escolha inválida.\n");
+            printf("| Escolha invalida.\n");
             while (getchar() != '\n');
             continue;
         }
