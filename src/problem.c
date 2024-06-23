@@ -524,10 +524,23 @@ void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tse
     }
 }
 
+void print_with_padding(const char* str, int width) {
+    int len = utf8_strlen(str);
+    printf("%s", str);
+    for (int i = len; i < width; i++) {
+        putchar(' ');
+    }
+}
+
 void imprimeInfoCidade(thash *h_ibge, const char *cod, int tam){
     tmunicipio *municipio = hash_busca(h_ibge, cod);
     printf("|  %s ", municipio->codigo_ibge);
+#ifdef  WINDOWS
     printf("| %-*s ", tam+1, municipio->nome);
+#else
+    printf("| ");
+    print_with_padding(municipio->nome,tam);
+#endif
     printf("| %8.4f ",municipio->latitude);
     printf("|  %8.4f ",municipio->longitude);
     printf("| %7d ",municipio->capital);
@@ -575,7 +588,7 @@ int maxTam(tset *set,thash *h_ibge){
     if(set==NULL) return 0;
     for(int i=0;i<set->tam;i++){
         municipio = hash_busca(h_ibge, set->lista[i]);
-        a=utf8_strlen(municipio->nome);
+        a=strlen(municipio->nome);
         if(a>max) max = a;
     }
     return max;

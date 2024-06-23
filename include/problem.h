@@ -41,7 +41,7 @@ typedef struct{
     tarv *avl_ddd;
 }conjAVL;
 
-
+int utf8_strlen(const char *s);
 void showQueries(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tset**sFinal);
 char *get_key_ibge(void *reg);
 int cmp (void *a, void *b, int active);
