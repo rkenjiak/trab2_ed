@@ -540,6 +540,7 @@ void imprimeInfoCidade(thash *h_ibge, const char *cod, int tam){
 #else
     printf("| ");
     print_with_padding(municipio->nome,tam);
+    printf(" ");
 #endif
     printf("| %8.4f ",municipio->latitude);
     printf("|  %8.4f ",municipio->longitude);
@@ -551,7 +552,13 @@ void imprimeInfoCidade(thash *h_ibge, const char *cod, int tam){
 }
 void imprimeInfoCidade2(tmunicipio *municipio, int tam){
     printf("|  %s ", municipio->codigo_ibge);
+#ifdef  WINDOWS
     printf("| %-*s ", tam+1, municipio->nome);
+#else
+    printf("| ");
+    print_with_padding(municipio->nome,tam);
+    printf(" ");
+#endif
     printf("| %8.4f ",municipio->latitude);
     printf("|  %8.4f ",municipio->longitude);
     printf("| %7d ",municipio->capital);
@@ -589,6 +596,18 @@ int maxTam(tset *set,thash *h_ibge){
     for(int i=0;i<set->tam;i++){
         municipio = hash_busca(h_ibge, set->lista[i]);
         a=strlen(municipio->nome);
+        if(a>max) max = a;
+    }
+    return max;
+}
+
+int max2Tam(tset *set,thash *h_ibge){
+    int max=0,a;
+    tmunicipio *municipio;
+    if(set==NULL) return 0;
+    for(int i=0;i<set->tam;i++){
+        municipio = hash_busca(h_ibge, set->lista[i]);
+        a=utf8_strlen(municipio->nome);
         if(a>max) max = a;
     }
     return max;
@@ -648,14 +667,19 @@ int cmp_ddd(const void*a,const void*b){
 }
 
 void ShowInterseccao(conjAVL *avls,thash *h_ibge,tset **sNome,tset **sLat,tset **sLong,tset **sUf,tset **sDDD,tset**sFinal,tmunicipio **vetor){
-    int opc=-1,tam,i,sorted=0;
+    int opc=-1,tam,tam2,i,sorted=0;
     desalocaSet(sFinal);
     *sFinal=calculaInterseccao(sNome,sLat,sLong,sUf,sDDD);
     tam = maxTam(*sFinal,h_ibge);
+    tam2 = max2Tam(*sFinal,h_ibge);
     criaVetor(*sFinal,vetor,h_ibge);
 
     while(opc!=0){
+#ifdef WINDOWS
         imprimeCabecalho(tam);
+#else
+        imprimeCabecalho(max(tam2-1,tam-1));
+#endif
         if(*sFinal!=NULL)
         for(i=0;i<(*sFinal)->tam && !sorted;i++){
             imprimeInfoCidade(h_ibge,(*sFinal)->lista[i],tam);

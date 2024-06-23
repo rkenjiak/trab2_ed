@@ -1,12 +1,12 @@
 ## Para compilar diretamente quando estiver em ~/trab2_ed/ no WINDOWS
 ```
-gcc -o test .\src\main.c .\src\avl.c .\src\hash.c .\src\linkedlist.c .\src\problem.c .\src\set.c
+gcc -o test .\src\main.c .\src\avl.c .\src\hash.c .\src\linkedlist.c .\src\problem.c .\src\set.c -DWINDOWS
 ```
 ## Para compilar diretamente quando estiver em ~/trab2_ed/ no LINUX
 ```
 gcc -o test ./src/main.c ./src/avl.c ./src/hash.c ./src/linkedlist.c ./src/problem.c ./src/set.c 
 ```
-
+Obs.: -DWINDOWS muda apenas formatação de impressões.
 
 ## O trabalho consiste em adaptar a AVL para que ela suporte range query (busca por intervalos). 
 
@@ -18,7 +18,7 @@ Descrição:
 (1.2) cada nó da árvore deve ter uma lista encadeada que armazena os registros com chaves iguais (um nó pode ter dois ou mais registros).  
 (1.3) Implemente a função de sucessor de um nó que consiga olhar para os ancestrais (veja o código de sucessor no livro do Cormem), esta funcionalidade irá permitir fazer o range query. 
 
-## Tarefa 2 (construção das avls)
+## Tarefa 2 (construção das AVLs)
 Descrição:  Construa uma AVL para cada um dos seguintes campos como chave da busca:  "nome", "latitude","longitude","codigo_uf" e "ddd". Deste modo você terá que instanciar cinco AVLs,  uma para cada campo. O registro armazenado deve conter a chave de busca + o código_ibge.
 
 Observe que na AVL  adaptada as chaves replicadas são armazenadas um mesmo nó. Por exemplo todas as cidades com DDD 67 serão amazenadas em um mesmo nó.

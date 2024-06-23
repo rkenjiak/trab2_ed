@@ -19,6 +19,7 @@ typedef struct _avl{
     int active;
 }tarv;
 
+int max(int a,int b);
 void avl_insere(tarv *parv,void * data,int active);
 void avl_insere_node(tarv *parv,tnode **ppnode,tnode *pai,void * data,int active);
 void avl_remove(tnode ** parv,LinkedList * item);
