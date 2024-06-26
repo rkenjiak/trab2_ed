@@ -62,6 +62,14 @@ void addAVL(tarv *parv, tmunicipio *municipio, int active){
     avl_insere(parv,new,active);
 }
 
+void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd){
+    avls->avl_nome = avl_nome;
+    avls->avl_lat = avl_lat;
+    avls->avl_long = avl_long;
+    avls->avl_uf = avl_uf;
+    avls->avl_ddd = avl_ddd;
+}
+
 void *aloca_city(tmunicipio *municipio, int active){
     tcity * new = malloc(sizeof(tcity));
     new->active = active;
@@ -104,11 +112,10 @@ void *aloca_municipio(char *codigo_ibge, char *nome, float latitude, float longi
 
 void carregaDados(conjAVL *avls,thash *h_ibge,int nbuckets,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd, FILE *arq,int *qtd){ // TODO
     char linha[60];
-    char *start;
-    char *end;
+    char *start, *end;
     int colisoes;
-    int max1=0, tot1=0, max2=0, tot2=0; //contadores colisoes
-    int totabb=0, c1=0 , c2=0; //insercoes realizadas
+    int max1=0, tot1=0; //contadores colisoes
+    int c1=0; //insercoes realizadas
     tmunicipio temp;
     tmunicipio *temp2;
 
@@ -203,18 +210,13 @@ void carregaDados(conjAVL *avls,thash *h_ibge,int nbuckets,tarv *avl_nome,tarv *
     *qtd = c1;
 }
 
-
-
 tset * range_query(tarv *avl, int qtd){
     int a, b, auxi, igual = 0;
     float c, d, auxf;
-    char palavra_1[40];
-    char palavra_2[40];
-    char aux[40];
-    tset * new = criaSet(qtd);
-    tnode * start;
-    tnode * end;
-    tnode ** auxiliar;
+    char palavra_1[40], palavra_2[40], aux[40];
+    tset *new = criaSet(qtd);
+    tnode *start, *end;
+    tnode **auxiliar;
     tcity temp;
     switch (avl->active)
     {
@@ -430,15 +432,6 @@ void showQueries(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tset**
     }else{
         printf("| Nao ha nenhuma QUERY selecionada.\n");
     }
-
-}
-
-void constroi_conjAVL(conjAVL *avls,tarv *avl_nome,tarv *avl_lat,tarv *avl_long,tarv *avl_uf,tarv *avl_ddd){
-    avls->avl_nome = avl_nome;
-    avls->avl_lat = avl_lat;
-    avls->avl_long = avl_long;
-    avls->avl_uf = avl_uf;
-    avls->avl_ddd = avl_ddd;
 }
 
 void AddEditQuery(conjAVL *avls,tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,int qtd,tset**sFinal){
@@ -524,6 +517,18 @@ void DesativarQuery(tset **sNome,tset**sLat,tset**sLong,tset**sUf,tset**sDDD,tse
     }
 }
 
+void imprimeCabecalho(int tam){
+    printf("| cod_ibge ");
+    printf("| nome%*c ",tam-3,' ');
+    printf("| latitude ");
+    printf("| longitude ");
+    printf("| capital ");
+    printf("| uf ");
+    printf("| siafi_id ");
+    printf("| ddd ");
+    printf("| fuso_horario\n");
+}
+
 void print_with_padding(const char* str, int width) {
     int len = utf8_strlen(str);
     printf("%s", str);
@@ -566,17 +571,6 @@ void imprimeInfoCidade2(tmunicipio *municipio, int tam){
     printf("| %8d ",municipio->siafi_id);
     printf("| %3d ",municipio->ddd);
     printf("| %s\n",municipio->fuso_horario);
-}
-void imprimeCabecalho(int tam){
-    printf("| cod_ibge ");
-    printf("| nome%*c ",tam-3,' ');
-    printf("| latitude ");
-    printf("| longitude ");
-    printf("| capital ");
-    printf("| uf ");
-    printf("| siafi_id ");
-    printf("| ddd ");
-    printf("| fuso_horario\n");
 }
 
 int utf8_strlen(const char *s) {

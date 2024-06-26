@@ -116,13 +116,14 @@ void hash_busca_ate_0(thash  *h, void *lista, const char *key, int repeticoes, s
 }
 */
 
+/*
 int hash_remove(thash * h, const char * key){
     int j = 0;
     uint32_t hash = hashf(key,SEED);
     uint32_t hash2 = hashf2(key);
     int pos = hash % (h->max);
     while(h->table[pos]!=0){
-        if (strcmp(h->get_key((void*)h->table[pos]),key) == 0){ /* se achei remove*/
+        if (strcmp(h->get_key((void*)h->table[pos]),key) == 0){ // se achei remove
             free((void *)h->table[pos]);
             h->table[pos] = h->deleted;
             h->size -= 1;
@@ -134,6 +135,7 @@ int hash_remove(thash * h, const char * key){
     }
     return EXIT_FAILURE;
 }
+*/
 
 void hash_apaga(thash *h){
     int pos;

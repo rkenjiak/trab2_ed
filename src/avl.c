@@ -17,11 +17,7 @@ int altura(tnode *arv){
     return ret;
 }
 
-void avl_insere(tarv *parv,void * data, int active){
-    avl_insere_node(parv,&parv->raiz,NULL,data,active);
-}
-
-void avl_insere_node(tarv *parv,tnode ** ppnode, tnode * pai,void * data, int active){ 
+void avl_insere_node_ll(tarv *parv,tnode ** ppnode, tnode * pai,void * data, int active){ 
     if (*ppnode == NULL){
         *ppnode = (tnode *) malloc(sizeof(tnode));
         //(*ppnode)->item = item; 
@@ -33,14 +29,18 @@ void avl_insere_node(tarv *parv,tnode ** ppnode, tnode * pai,void * data, int ac
         insere_inicio(data, (*ppnode)->item);
 
     }else if(parv->cmp((void*)((*ppnode)->item->head->data), data,active)>0){ 
-        avl_insere_node(parv,&(*ppnode)->esq,(*ppnode),data,active);
+        avl_insere_node_ll(parv,&(*ppnode)->esq,(*ppnode),data,active);
     }else if(parv->cmp((void*)((*ppnode)->item->head->data), data,active)<0){
-        avl_insere_node(parv,&(*ppnode)->dir,(*ppnode),data,active);
+        avl_insere_node_ll(parv,&(*ppnode)->dir,(*ppnode),data,active);
     }else { // caso que precisa inserir em linkedlist
         insere_inicio(data, (*ppnode)->item); // apenas insere na ll?
     }
     (*ppnode)->h = max(altura((*ppnode)->esq),altura((*ppnode)->dir)) + 1;
     _avl_rebalancear(ppnode);
+}
+
+void avl_insere(tarv *parv,void * data, int active){
+    avl_insere_node_ll(parv,&parv->raiz,NULL,data,active);
 }
 
 void _rd(tnode **ppnode){
@@ -53,9 +53,11 @@ void _rd(tnode **ppnode){
     y->esq = B; 
     x->dir = y;
     *ppnode = x;
+
     x->pai = y->pai;
     if(B != NULL)B->pai = y;
-    y->pai = x;    
+    y->pai = x; 
+
     y->h = max(altura(B),altura(C)) + 1;
     x->h = max(altura(A),altura(y)) + 1;
 }
@@ -70,9 +72,11 @@ void _re(tnode **ppnode){
     x->dir = B;
     y->esq = x; 
     *ppnode = y;
+
     y->pai = x->pai;
     if(B != NULL)B->pai = x;
-    x->pai = y;    
+    x->pai = y;  
+
     x->h = max(altura(A),altura(B)) + 1;
     y->h = max(altura(x),altura(C)) + 1;
 }
@@ -103,6 +107,7 @@ void _avl_rebalancear(tnode **parv){
     }
 }
 
+/*
 tnode ** percorre_esq(tnode ** arv){
     tnode * aux = *arv;
     if (aux->esq  == NULL){
@@ -113,6 +118,7 @@ tnode ** percorre_esq(tnode ** arv){
         return &(aux->esq);
     }
 }
+*/
 
 tnode ** tree_minimum(tnode **arv){
     tnode *aux = *arv;
@@ -148,21 +154,22 @@ tnode **sucessor(tnode **arv){
     return &(x->pai);
 }
 
-void avl_remove(tnode **parv, LinkedList *reg){ /* adaptar para ll */
+/*
+void avl_remove(tnode **parv, LinkedList *reg){
     int cmp;
     tnode *aux;
     tnode **sucessor;
     if (*parv != NULL){
         cmp  = (*parv)->item  - reg;
-        if (cmp > 0){ /* ir esquerda*/
+        if (cmp > 0){ // ir esquerda
             avl_remove(&((*parv)->esq), reg);
-        }else if (cmp < 0){ /*ir direita*/
+        }else if (cmp < 0){ //ir direita
             avl_remove(&((*parv)->dir), reg);
-        }else{ /* ACHOU  */
-            if ((*parv)->esq == NULL && (*parv)->dir == NULL){   /* no folha */
+        }else{ // ACHOU 
+            if ((*parv)->esq == NULL && (*parv)->dir == NULL){   // no folha 
                 free(*parv);
                 *parv = NULL;
-            }else if ((*parv)->esq == NULL || (*parv)->dir == NULL){ /* tem um filho*/
+            }else if ((*parv)->esq == NULL || (*parv)->dir == NULL){ // tem um filho
                 aux = *parv;
                 if ((*parv)->esq == NULL){
                     *parv = (*parv)->dir;
@@ -170,7 +177,7 @@ void avl_remove(tnode **parv, LinkedList *reg){ /* adaptar para ll */
                     *parv = (*parv)->esq;
                 }
                 free(aux);
-            }else{ /* tem dois filhos */
+            }else{ // tem dois filhos 
                 sucessor = percorre_esq(&(*parv)->dir);
                 (*parv)->item = (*sucessor)->item;
                 avl_remove(&(*parv)->dir,(*sucessor)->item);
@@ -182,12 +189,9 @@ void avl_remove(tnode **parv, LinkedList *reg){ /* adaptar para ll */
         }
     }
 }
+*/
 
-void avl_destroi(tarv * arv, void (*freefunc)(void*)){
-    avl_destroi_node(arv->raiz,freefunc);
-}
-
-void avl_destroi_node(tnode *pnode, void (*freefunc)(void*)){ // TODO: free on linkedlist
+void avl_destroi_node(tnode *pnode, void (*freefunc)(void*)){
     if (pnode!=NULL){
         avl_destroi_node(pnode->esq,freefunc);
         avl_destroi_node(pnode->dir,freefunc);
@@ -196,8 +200,8 @@ void avl_destroi_node(tnode *pnode, void (*freefunc)(void*)){ // TODO: free on l
     }
 }
 
-tnode * achar_inicio(tarv * parv, void * data){
-    return achar_node_prox(parv, &parv->raiz,data); 
+void avl_destroi(tarv * arv, void (*freefunc)(void*)){
+    avl_destroi_node(arv->raiz,freefunc);
 }
 
 tnode * achar_node_prox(tarv *parv, tnode **ppnode, void *data){
@@ -214,8 +218,9 @@ tnode * achar_node_prox(tarv *parv, tnode **ppnode, void *data){
     return achar_node_prox(parv,&(*ppnode)->dir,data);    
 }
 
-tnode * achar_fim(tarv * parv, void * data){
-    return achar_node_ant(parv, &parv->raiz,data); 
+// buscar *inicio, nó sucessor, ou null se invalido para as condicoes anteriores
+tnode * achar_inicio(tarv * parv, void * data){
+    return achar_node_prox(parv, &parv->raiz,data); 
 }
 
 tnode * achar_node_ant(tarv *parv, tnode **ppnode, void *data){
@@ -232,3 +237,7 @@ tnode * achar_node_ant(tarv *parv, tnode **ppnode, void *data){
     return achar_node_ant(parv,&(*ppnode)->esq,data);    
 }
 
+// buscar *fim, nó antecessor, ou null se invalido para as condicoes anteriores
+tnode * achar_fim(tarv * parv, void * data){
+    return achar_node_ant(parv, &parv->raiz,data); 
+}

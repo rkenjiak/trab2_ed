@@ -7,14 +7,11 @@
 int main(){
     thash h_ibge;
     tarv avl_nome, avl_lat, avl_long, avl_uf, avl_ddd;
-    tset *sNome,*sLat,*sLong,*sUf,*sDDD,*sFinal;
+    tset *sNome,*sLat,*sLong,*sUf,*sDDD,*sFinal; //sFinal eh interseccao
     conjAVL avls;
-    tmunicipio *vetor;
+    tmunicipio *vetor; //vetor eh vetor de tmunicipios para imprimir ordenados
 
-    int nbuckets = 15013;
-    char leitura[40];
-    int escolha = -1;
-    int qtd;    
+    int qtd, nbuckets = 15013, escolha = -1;
     sNome=sLat=sLong=sUf=sDDD=sFinal=NULL;
 
     FILE *arquivo = fopen("./data/municipios.json", "r");
@@ -46,8 +43,7 @@ int main(){
             printf("| Escolha invalida.\n");
             while (getchar() != '\n');
             continue;
-        }
-        
+        }        
     }
 
     desalocaSet(&sNome);
@@ -55,8 +51,7 @@ int main(){
     desalocaSet(&sLong);
     desalocaSet(&sUf);
     desalocaSet(&sDDD);
-    desalocaSet(&sFinal);
-        
+    desalocaSet(&sFinal);        
     hash_apaga(&h_ibge);
     printf("Hash apagada.\n");
     avl_destroi(&avl_nome,avl_nome.freefunc);

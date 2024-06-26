@@ -21,10 +21,7 @@ typedef struct _avl{
 
 int max(int a,int b);
 void avl_insere(tarv *parv,void * data,int active);
-void avl_insere_node(tarv *parv,tnode **ppnode,tnode *pai,void * data,int active);
-void avl_remove(tnode ** parv,LinkedList * item);
-void avl_destroi_node(tnode *pnode,void (*freefunc)(void*)); // free on linkedlist
-void avl_destroi(tarv * parv,void (*freefunc)(void*));
+void avl_destroi(tarv * parv,void (*freefunc)(void*));// free on linkedlist
 
 tnode ** tree_minimum(tnode **arv);
 tnode ** tree_maximum(tnode **arv);
@@ -35,8 +32,6 @@ void _re(tnode ** pparv);
 void _avl_rebalancear(tnode ** pparv);
 
 tnode * achar_inicio(tarv * parv, void * data); //tcity
-tnode * achar_node_prox(tarv *parv, tnode **ppnode, void *data);
 tnode * achar_fim(tarv * parv, void * data);
-tnode * achar_node_ant(tarv *parv, tnode **ppnode, void *data);
 
 #endif
