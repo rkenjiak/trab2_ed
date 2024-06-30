@@ -6,8 +6,15 @@ gcc -o test .\src\main.c .\src\avl.c .\src\hash.c .\src\linkedlist.c .\src\probl
 ```
 gcc -o test ./src/main.c ./src/avl.c ./src/hash.c ./src/linkedlist.c ./src/problem.c ./src/set.c 
 ```
-Obs.: -DWINDOWS muda apenas formatação de impressões.
+## Alternativamente, crie /bin "mkdir bin", use "make" e enfim execute 
 
+```
+mkdir bin && make
+```
+```
+./bin/saida
+```
+Obs.: -DWINDOWS muda apenas formatação de impressões.
 ## O trabalho consiste em adaptar a AVL para que ela suporte range query (busca por intervalos). 
 
 Considerando a base dados do trabalho anterior do IBGE de cidades (https://github.com/kelvins/municipios-brasileiros/blob/main/json/municipios.json), com esta estrutura adaptada você conseguirá fazer buscas por intervalos. Por exemplo retornar todas as cidades que possuem DDD entre 15 e 20. Retornar todas as cidades que possuem latitude entre -31 e -34 e longitude entre - 50 e -54, ou mesmo fazer combinações entre latitude, longitude e DDD. 
